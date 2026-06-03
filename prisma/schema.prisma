@@ -1,0 +1,294 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Organisation {
+  id            String   @id @default(cuid())
+  nom           String
+  siret         String?
+  email         String?
+  telephone     String?
+  adresse       String?
+  logoUrl       String?
+  couleurPrim   String   @default("#6366f1")
+  fuseauHoraire String   @default("Europe/Paris")
+  createdAt     DateTime @default(now())
+  utilisateurs  Utilisateur[]
+  clients       Client[]
+  evenements    Evenement[]
+  devis         Devis[]
+  factures      Facture[]
+  prestataires  Prestataire[]
+}
+
+model Utilisateur {
+  id             String   @id @default(cuid())
+  organisationId String
+  email          String   @unique
+  nom            String
+  prenom         String
+  motDePasseHash String
+  role           Role     @default(COMMERCIAL)
+  actif          Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  evenements     Evenement[]
+  taches         Tache[]
+}
+
+enum Role {
+  ADMIN
+  DIRECTEUR
+  COMMERCIAL
+  CHEF_PROJET
+  COMPTABLE
+}
+
+model Client {
+  id             String    @id @default(cuid())
+  organisationId String
+  raisonSociale  String
+  siret          String?
+  email          String?
+  telephone      String?
+  adresse        String?
+  codePostal     String?
+  ville          String?
+  secteur        String?
+  notes          String?
+  actif          Boolean   @default(true)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  contacts       Contact[]
+  evenements     Evenement[]
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  clientId  String
+  prenom    String
+  nom       String
+  poste     String?
+  email     String?
+  telephone String?
+  mobile    String?
+  principal Boolean  @default(false)
+  createdAt DateTime @default(now())
+  client    Client   @relation(fields: [clientId], references: [id])
+}
+
+model Evenement {
+  id                 String          @id @default(cuid())
+  organisationId     String
+  clientId           String?
+  commercialId       String?
+  nom                String
+  type               TypeEvenement   @default(AUTRE)
+  statut             StatutEvenement @default(PROSPECTION)
+  dateDebut          DateTime?
+  dateFin            DateTime?
+  nombreParticipants Int?
+  budgetIndicatif    Float?
+  lieu               String?
+  brief              String?
+  notes              String?
+  probabilite        Int             @default(50)
+  deletedAt          DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  organisation       Organisation    @relation(fields: [organisationId], references: [id])
+  client             Client?         @relation(fields: [clientId], references: [id])
+  commercial         Utilisateur?    @relation(fields: [commercialId], references: [id])
+  devis              Devis[]
+  factures           Facture[]
+  taches             Tache[]
+}
+
+enum TypeEvenement {
+  CONFERENCE
+  SEMINAIRE
+  GALA
+  TEAMBUILDING
+  MARIAGE
+  CONGRES
+  SALON
+  AUTRE
+}
+
+enum StatutEvenement {
+  PROSPECTION
+  OPTION
+  CONFIRME
+  EN_COURS
+  REALISE
+  ANNULE
+}
+
+model Devis {
+  id                 String      @id @default(cuid())
+  organisationId     String
+  evenementId        String?
+  numero             String      @unique
+  statut             StatutDevis @default(BROUILLON)
+  objet              String?
+  dateEmission       DateTime    @default(now())
+  dateValidite       DateTime?
+  totalHt            Float       @default(0)
+  totalTva           Float       @default(0)
+  totalTtc           Float       @default(0)
+  tauxMarge          Float?
+  notes              String?
+  conditionsPaiement String?
+  nbConsultations    Int         @default(0)
+  deletedAt          DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  organisation       Organisation @relation(fields: [organisationId], references: [id])
+  evenement          Evenement?  @relation(fields: [evenementId], references: [id])
+  lignes             LigneDevis[]
+  factures           Facture[]
+}
+
+enum StatutDevis {
+  BROUILLON
+  ENVOYE
+  VU
+  ACCEPTE
+  REFUSE
+  EXPIRE
+}
+
+model LigneDevis {
+  id               String @id @default(cuid())
+  devisId          String
+  ordre            Int
+  description      String
+  quantite         Float  @default(1)
+  prixUnitaireHt   Float
+  tauxTva          Float  @default(20)
+  totalHt          Float
+  totalTtc         Float
+  devis            Devis  @relation(fields: [devisId], references: [id], onDelete: Cascade)
+}
+
+model Facture {
+  id             String        @id @default(cuid())
+  organisationId String
+  evenementId    String?
+  devisId        String?
+  numero         String        @unique
+  statut         StatutFacture @default(BROUILLON)
+  type           TypeFacture   @default(FACTURE)
+  objet          String?
+  dateEmission   DateTime      @default(now())
+  dateEcheance   DateTime?
+  totalHt        Float         @default(0)
+  totalTva       Float         @default(0)
+  totalTtc       Float         @default(0)
+  montantPaye    Float         @default(0)
+  notes          String?
+  deletedAt      DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organisation   Organisation  @relation(fields: [organisationId], references: [id])
+  evenement      Evenement?    @relation(fields: [evenementId], references: [id])
+  devis          Devis?        @relation(fields: [devisId], references: [id])
+  lignes         LigneFacture[]
+  reglements     Reglement[]
+}
+
+enum StatutFacture {
+  BROUILLON
+  EMISE
+  ENVOYEE
+  PAYEE
+  RETARD
+  ANNULEE
+}
+
+enum TypeFacture {
+  FACTURE
+  AVOIR
+  ACOMPTE
+}
+
+model LigneFacture {
+  id             String  @id @default(cuid())
+  factureId      String
+  ordre          Int
+  description    String
+  quantite       Float   @default(1)
+  prixUnitaireHt Float
+  tauxTva        Float   @default(20)
+  totalHt        Float
+  totalTtc       Float
+  facture        Facture @relation(fields: [factureId], references: [id], onDelete: Cascade)
+}
+
+model Reglement {
+  id        String       @id @default(cuid())
+  factureId String
+  montant   Float
+  date      DateTime     @default(now())
+  mode      ModePaiement @default(VIREMENT)
+  reference String?
+  facture   Facture      @relation(fields: [factureId], references: [id])
+}
+
+enum ModePaiement {
+  VIREMENT
+  CHEQUE
+  CARTE
+  ESPECES
+  PRELEVEMENT
+}
+
+model Tache {
+  id             String      @id @default(cuid())
+  organisationId String?
+  evenementId    String?
+  assigneId      String?
+  titre          String
+  description    String?
+  statut         StatutTache @default(A_FAIRE)
+  priorite       PrioriteTask @default(NORMALE)
+  dueDate        DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime    @default(now())
+  evenement      Evenement?  @relation(fields: [evenementId], references: [id])
+  assigne        Utilisateur? @relation(fields: [assigneId], references: [id])
+}
+
+enum StatutTache {
+  A_FAIRE
+  EN_COURS
+  TERMINEE
+  ANNULEE
+}
+
+enum PrioriteTask {
+  BASSE
+  NORMALE
+  HAUTE
+  URGENTE
+}
+
+model Prestataire {
+  id             String   @id @default(cuid())
+  organisationId String
+  nom            String
+  categorie      String?
+  email          String?
+  telephone      String?
+  notes          String?
+  note           Int?
+  actif          Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+}
