@@ -8,50 +8,24 @@ if (!url || !url.startsWith('postgres')) {
 }
 
 const prismaBin = path.join(__dirname, '..', 'node_modules', '.bin', 'prisma')
+const sqlFile = path.join(__dirname, 'migrate-data.sql')
 
-async function migrate() {
-  // Use the same adapter pattern as src/lib/prisma.ts
-  const { PrismaNeon } = require('@prisma/adapter-neon')
-  const { neonConfig } = require('@neondatabase/serverless')
-  const ws = require('ws')
-  const { PrismaClient } = require('@prisma/client')
-
-  neonConfig.webSocketConstructor = ws
-  const adapter = new PrismaNeon({ connectionString: url })
-  const prisma = new PrismaClient({ adapter })
-
-  try {
-    const r1 = await prisma.$executeRawUnsafe(
-      `UPDATE "Evenement" SET statut = 'OPTION' WHERE statut::text IN ('PROSPECTION','EN_COURS','REALISE')`
-    )
-    console.log('✓ StatutEvenement migrated:', r1, 'rows')
-  } catch (e) {
-    console.log('StatutEvenement skip:', e.message)
-  }
-
-  try {
-    const r2 = await prisma.$executeRawUnsafe(
-      `UPDATE "Utilisateur" SET role = 'CHEF_PROJET' WHERE role::text IN ('DIRECTEUR','COMMERCIAL','COMPTABLE')`
-    )
-    console.log('✓ Role migrated:', r2, 'rows')
-  } catch (e) {
-    console.log('Role skip:', e.message)
-  }
-
-  await prisma.$disconnect()
-
-  console.log('Running prisma db push...')
-  const result = spawnSync(prismaBin, ['db', 'push', '--accept-data-loss'], {
-    stdio: 'inherit',
-    env: process.env,
-  })
-
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1)
-  }
+function runPrisma(args) {
+  const result = spawnSync(prismaBin, args, { stdio: 'inherit', env: process.env })
+  return result.status ?? 1
 }
 
-migrate().catch((e) => {
-  console.error('pre-deploy error:', e.message)
-  process.exit(1)
-})
+// Step 1: migrate data using same TCP connection as db push
+console.log('Migrating data...')
+const migrateStatus = runPrisma(['db', 'execute', '--file', sqlFile])
+if (migrateStatus !== 0) {
+  console.log('Migration returned non-zero, continuing anyway...')
+}
+
+// Step 2: push schema
+console.log('Running prisma db push...')
+const pushStatus = runPrisma(['db', 'push', '--accept-data-loss'])
+if (pushStatus !== 0) {
+  console.error('prisma db push failed')
+  process.exit(pushStatus)
+}
