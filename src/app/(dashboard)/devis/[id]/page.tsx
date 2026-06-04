@@ -137,7 +137,7 @@ export default function DevisDetailPage() {
             <div className="flex justify-between mb-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">DEVIS</h2>
-                <p className="text-lg font-mono text-indigo-600">{devis.numero}</p>
+                <p className="text-lg font-mono text-[#C41230]">{devis.numero}</p>
               </div>
               <div className="text-right text-sm text-gray-600">
                 <p><strong>Date :</strong> {formatDate(devis.dateEmission)}</p>
@@ -201,7 +201,7 @@ export default function DevisDetailPage() {
                 </div>
                 <div className="flex justify-between font-bold text-lg border-t pt-2">
                   <span>Total TTC</span>
-                  <span className="text-indigo-600">{formatCurrency(devis.totalTtc)}</span>
+                  <span className="text-[#C41230]">{formatCurrency(devis.totalTtc)}</span>
                 </div>
               </div>
             </div>

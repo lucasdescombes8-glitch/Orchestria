@@ -33,7 +33,7 @@ export default async function EvenementsPage({ searchParams }: Props) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Événements</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Événements<span className="text-[#C41230]"> /</span></h1>
           <p className="text-sm text-gray-500 mt-1">{evenements.length} événement(s)</p>
         </div>
         <div className="flex items-center gap-3">

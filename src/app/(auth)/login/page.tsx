@@ -38,10 +38,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-[#9B0E25]">
       <div className="w-full max-w-md px-4">
         <div className="flex flex-col items-center mb-8">
-          <div className="h-16 w-16 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4 shadow-lg">
+          <div className="h-16 w-16 rounded-2xl bg-[#C41230] flex items-center justify-center mb-4 shadow-lg">
             <Calendar className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white">Orchestria</h1>

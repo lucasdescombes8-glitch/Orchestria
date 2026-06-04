@@ -36,7 +36,7 @@ export default async function ClientDetailPage({ params }: Props) {
           </Link>
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-xl bg-[#FDF2F4] flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-indigo-600" />
+              <Building2 className="h-6 w-6 text-[#C41230]" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{client.raisonSociale}</h1>
@@ -166,7 +166,7 @@ export default async function ClientDetailPage({ params }: Props) {
             ) : (
               client.evenements.map((ev) => (
                 <Link key={ev.id} href={`/evenements/${ev.id}`}>
-                  <Card className="hover:border-indigo-200 transition-colors cursor-pointer">
+                  <Card className="hover:border-[#C41230]/20 transition-colors cursor-pointer">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div>

@@ -204,7 +204,7 @@ export default function FactureDetailPage() {
           <div className="flex justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">FACTURE</h2>
-              <p className="text-lg font-mono text-indigo-600">{facture.numero}</p>
+              <p className="text-lg font-mono text-[#C41230]">{facture.numero}</p>
             </div>
             <div className="text-right text-sm text-gray-600">
               <p><strong>Date :</strong> {formatDate(facture.dateEmission)}</p>
@@ -265,7 +265,7 @@ export default function FactureDetailPage() {
               </div>
               <div className="flex justify-between font-bold text-lg border-t pt-2">
                 <span>Total TTC</span>
-                <span className="text-indigo-600">{formatCurrency(facture.totalTtc)}</span>
+                <span className="text-[#C41230]">{formatCurrency(facture.totalTtc)}</span>
               </div>
             </div>
           </div>

@@ -49,7 +49,7 @@ export default async function EvenementDetailPage({ params }: Props) {
             </div>
             <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
               {ev.client && (
-                <Link href={`/clients/${ev.client.id}`} className="flex items-center gap-1 hover:text-indigo-600">
+                <Link href={`/clients/${ev.client.id}`} className="flex items-center gap-1 hover:text-[#C41230]">
                   <Building2 className="h-3.5 w-3.5" />
                   {ev.client.raisonSociale}
                 </Link>
@@ -163,7 +163,7 @@ export default async function EvenementDetailPage({ params }: Props) {
             ) : (
               ev.devis.map((d) => (
                 <Link key={d.id} href={`/devis/${d.id}`}>
-                  <Card className="hover:border-indigo-200 transition-colors cursor-pointer">
+                  <Card className="hover:border-[#C41230]/20 transition-colors cursor-pointer">
                     <CardContent className="p-4 flex items-center justify-between">
                       <div>
                         <p className="font-medium text-gray-900">{d.numero}</p>
@@ -193,7 +193,7 @@ export default async function EvenementDetailPage({ params }: Props) {
             ) : (
               ev.factures.map((f) => (
                 <Link key={f.id} href={`/factures/${f.id}`}>
-                  <Card className="hover:border-indigo-200 transition-colors cursor-pointer">
+                  <Card className="hover:border-[#C41230]/20 transition-colors cursor-pointer">
                     <CardContent className="p-4 flex items-center justify-between">
                       <div>
                         <p className="font-medium text-gray-900">{f.numero}</p>
