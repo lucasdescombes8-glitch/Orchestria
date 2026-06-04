@@ -105,7 +105,7 @@ export default async function DashboardPage() {
 
     const pipelineLabels: Record<string, string> = {
       PROSPECTION: 'Opportunité', OPTION: 'Option', CONFIRME: 'Confirmé',
-      EN_COURS: 'En cours', REALISE: 'Facturation', 
+      REALISE: 'Facturation', 
     }
 
     return (
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader><CardTitle className="text-base">Pipeline événements</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              {['PROSPECTION', 'OPTION', 'CONFIRME', 'EN_COURS', 'REALISE'].map((statut) => {
+              {['PROSPECTION', 'OPTION', 'CONFIRME', 'REALISE'].map((statut) => {
                 const item = pipeline.find((p) => p.statut === statut)
                 const count = item?._count ?? 0
                 const max = Math.max(...pipeline.map((p) => p._count), 1)

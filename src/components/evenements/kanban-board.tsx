@@ -12,7 +12,6 @@ const STATUTS = [
   { key: 'PROSPECTION', label: 'Opportunité', color: 'bg-gray-100 border-gray-200' },
   { key: 'OPTION', label: 'Option', color: 'bg-blue-50 border-blue-200' },
   { key: 'CONFIRME', label: 'Confirmé', color: 'bg-green-50 border-green-200' },
-  { key: 'EN_COURS', label: 'En cours', color: 'bg-purple-50 border-purple-200' },
   { key: 'REALISE', label: 'Facturation', color: 'bg-emerald-50 border-emerald-200' },
 ]
 

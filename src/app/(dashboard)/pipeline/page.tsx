@@ -10,7 +10,6 @@ const STATUTS = [
   { key: 'PROSPECTION', label: 'Opportunité' },
   { key: 'OPTION', label: 'Option' },
   { key: 'CONFIRME', label: 'Confirmé' },
-  { key: 'EN_COURS', label: 'En cours' },
   { key: 'REALISE', label: 'Facturation' },
 ]
 
