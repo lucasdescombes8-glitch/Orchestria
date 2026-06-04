@@ -1,4 +1,5 @@
-const { execSync } = require('child_process')
+const { spawnSync } = require('child_process')
+const path = require('path')
 
 const url = process.env.DATABASE_URL
 if (!url || !url.startsWith('postgres')) {
@@ -6,30 +7,46 @@ if (!url || !url.startsWith('postgres')) {
   process.exit(0)
 }
 
-async function run() {
-  // Use neon serverless HTTP driver — works in all build environments
-  const { neon } = require('@neondatabase/serverless')
-  const sql = neon(url)
+const prismaBin = path.join(__dirname, '..', 'node_modules', '.bin', 'prisma')
+
+async function migrate() {
+  const { PrismaClient } = require('@prisma/client')
+  const prisma = new PrismaClient()
 
   try {
-    await sql`UPDATE "Evenement" SET statut = 'OPTION' WHERE statut::text IN ('PROSPECTION','EN_COURS','REALISE')`
-    console.log('✓ StatutEvenement migration done')
+    await prisma.$executeRawUnsafe(
+      `UPDATE "Evenement" SET statut = 'OPTION' WHERE statut::text IN ('PROSPECTION','EN_COURS','REALISE')`
+    )
+    console.log('✓ StatutEvenement migrated')
   } catch (e) {
-    console.log('StatutEvenement migration skipped:', e.message)
+    console.log('StatutEvenement skip:', e.message)
   }
 
   try {
-    await sql`UPDATE "Utilisateur" SET role = 'CHEF_PROJET' WHERE role::text IN ('DIRECTEUR','COMMERCIAL','COMPTABLE')`
-    console.log('✓ Role migration done')
+    await prisma.$executeRawUnsafe(
+      `UPDATE "Utilisateur" SET role = 'CHEF_PROJET' WHERE role::text IN ('DIRECTEUR','COMMERCIAL','COMPTABLE')`
+    )
+    console.log('✓ Role migrated')
   } catch (e) {
-    console.log('Role migration skipped:', e.message)
+    console.log('Role skip:', e.message)
   }
+
+  await prisma.$disconnect()
 
   console.log('Running prisma db push...')
-  execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' })
+  // Use spawnSync with args array to avoid any shell-level flag stripping
+  const result = spawnSync(prismaBin, ['db', 'push', '--accept-data-loss'], {
+    stdio: 'inherit',
+    env: process.env,
+  })
+
+  if (result.status !== 0) {
+    console.error('prisma db push failed with status', result.status)
+    process.exit(result.status ?? 1)
+  }
 }
 
-run().catch((e) => {
-  console.error('pre-deploy failed:', e.message)
+migrate().catch((e) => {
+  console.error('pre-deploy error:', e.message)
   process.exit(1)
 })
