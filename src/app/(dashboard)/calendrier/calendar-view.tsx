@@ -69,11 +69,31 @@ function isoDate(date: Date) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+const FILTER_STATUTS = [
+  { key: 'OPTION',      label: 'Option',    cfg: STATUT_CONFIG.OPTION },
+  { key: 'CONFIRME',    label: 'Confirmé',  cfg: STATUT_CONFIG.CONFIRME },
+  { key: 'EN_COURS',    label: 'En cours',  cfg: STATUT_CONFIG.EN_COURS },
+  { key: 'REALISE',     label: 'Réalisé',   cfg: STATUT_CONFIG.REALISE },
+  { key: 'ANNULE',      label: 'Annulé',    cfg: STATUT_CONFIG.ANNULE },
+]
+
 export function CalendarView({ evenements }: { evenements: EventData[] }) {
   const router = useRouter()
   const today = new Date()
   const [year, setYear]   = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth())
+  const [activeStatuts, setActiveStatuts] = useState<Set<string>>(
+    new Set(['OPTION', 'CONFIRME', 'EN_COURS', 'REALISE'])
+  )
+
+  function toggleStatut(key: string) {
+    setActiveStatuts((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
 
   const days = useMemo(() => daysInMonth(year, month), [year, month])
 
@@ -88,8 +108,13 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
     return result
   }, [])
 
+  const visibleEvenements = useMemo(
+    () => evenements.filter((ev) => activeStatuts.has(ev.statut)),
+    [evenements, activeStatuts]
+  )
+
   const getEventsForDayRoom = useCallback((day: Date, room: string): EventData[] => {
-    return evenements.filter((ev) => {
+    return visibleEvenements.filter((ev) => {
       if (!ev.dateDebut) return false
       const d = parseISO(ev.dateDebut)
       if (d.getFullYear() !== day.getFullYear() || d.getMonth() !== day.getMonth() || d.getDate() !== day.getDate()) return false
@@ -154,14 +179,26 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
             ))}
           </div>
 
-          {/* Legend */}
-          <div className="flex items-center gap-3 text-xs text-gray-500">
-            {Object.entries(STATUT_CONFIG).filter(([key]) => key !== 'PROSPECTION').map(([key, cfg]) => (
-              <span key={key} className="flex items-center gap-1">
-                <span className={cn('h-2 w-2 rounded-full', cfg.dot)} />
-                {key === 'OPTION' ? 'Option' : key === 'CONFIRME' ? 'Confirmé' : key === 'EN_COURS' ? 'En cours' : key === 'REALISE' ? 'Réalisé' : 'Annulé'}
-              </span>
-            ))}
+          {/* Filtres statut */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {FILTER_STATUTS.map(({ key, label, cfg }) => {
+              const active = activeStatuts.has(key)
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleStatut(key)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium border transition-all',
+                    active
+                      ? `${cfg.bg} ${cfg.text} border-current/20 shadow-sm`
+                      : 'bg-white text-gray-400 border-gray-200 line-through opacity-50'
+                  )}
+                >
+                  <span className={cn('h-2 w-2 rounded-full shrink-0', active ? cfg.dot : 'bg-gray-300')} />
+                  {label}
+                </button>
+              )
+            })}
           </div>
         </div>
 
