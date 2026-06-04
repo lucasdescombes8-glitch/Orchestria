@@ -353,11 +353,11 @@ function NouvelEvenementForm() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dateDebut">Date de début</Label>
-                <Input id="dateDebut" name="dateDebut" type="datetime-local" value={dateDebutValue} onChange={(e) => setDateDebutValue(e.target.value)} />
+                <Input id="dateDebut" name="dateDebut" type="date" value={dateDebutValue} onChange={(e) => setDateDebutValue(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dateFin">Date de fin</Label>
-                <Input id="dateFin" name="dateFin" type="datetime-local" value={dateFinValue} onChange={(e) => setDateFinValue(e.target.value)} />
+                <Input id="dateFin" name="dateFin" type="date" value={dateFinValue} onChange={(e) => setDateFinValue(e.target.value)} />
               </div>
             </div>
             {conflits.length > 0 && (
