@@ -11,7 +11,7 @@ const evenementLabels: Record<StatutEvenement, string> = {
   OPTION: 'Option',
   CONFIRME: 'Confirmé',
   EN_COURS: 'En cours',
-  REALISE: 'Réalisé',
+  REALISE: 'Facturation',
 }
 
 const evenementVariants: Record<StatutEvenement, string> = {

@@ -11,7 +11,7 @@ const STATUTS = [
   { key: 'OPTION', label: 'Option' },
   { key: 'CONFIRME', label: 'Confirmé' },
   { key: 'EN_COURS', label: 'En cours' },
-  { key: 'REALISE', label: 'Réalisé' },
+  { key: 'REALISE', label: 'Facturation' },
 ]
 
 export default async function PipelinePage() {

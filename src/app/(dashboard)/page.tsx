@@ -105,7 +105,7 @@ export default async function DashboardPage() {
 
     const pipelineLabels: Record<string, string> = {
       PROSPECTION: 'Opportunité', OPTION: 'Option', CONFIRME: 'Confirmé',
-      EN_COURS: 'En cours', REALISE: 'Réalisé', 
+      EN_COURS: 'En cours', REALISE: 'Facturation', 
     }
 
     return (
