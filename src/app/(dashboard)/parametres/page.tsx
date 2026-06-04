@@ -3,7 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Shield, Users, Settings } from 'lucide-react'
+import { Shield, Users, Settings, Wrench } from 'lucide-react'
+import { TypesPrestatairManager } from './types-prestataire-manager'
 
 const ROLES = [
   {
@@ -37,10 +38,15 @@ export default async function ParametresPage() {
   if (!orgId) redirect('/login')
 
   let users: { id: string; nom: string; prenom: string; email: string; role: string; actif: boolean }[] = []
+  let dbTypes: { id: string; nom: string }[] = []
   try {
     users = await prisma.utilisateur.findMany({
       where: { organisationId: orgId },
       select: { id: true, nom: true, prenom: true, email: true, role: true, actif: true },
+      orderBy: { createdAt: 'asc' },
+    })
+    dbTypes = await prisma.typePrestataire.findMany({
+      where: { organisationId: orgId },
       orderBy: { createdAt: 'asc' },
     })
   } catch {
@@ -133,6 +139,28 @@ export default async function ParametresPage() {
                   ))}
                 </tbody>
               </table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Types de prestataires */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Wrench className="h-5 w-5 text-[#C41230]" />
+          <h2 className="text-lg font-semibold text-gray-900">Types de prestataires</h2>
+        </div>
+        <Card>
+          <CardContent className="p-5">
+            <p className="text-sm text-gray-500 mb-4">
+              Ces types apparaissent lors de la création ou modification d&apos;une entreprise de type prestataire.
+            </p>
+            <TypesPrestatairManager types={dbTypes} />
+            {dbTypes.length === 0 && (
+              <p className="text-xs text-gray-400 mt-3">
+                Aucun type personnalisé — les types par défaut sont utilisés (Traiteur, Photographe, Technique, Photobooth, Fleuriste, Piano, Autre).
+                Ajoutez un type pour personnaliser la liste.
+              </p>
             )}
           </CardContent>
         </Card>

@@ -61,6 +61,8 @@ export async function createClient(data: {
   ville?: string
   secteur?: string
   notes?: string
+  typeEntreprise?: string
+  typePrestataire?: string
 }) {
   const session = await getSession()
   const orgId = (session.user as any).organisationId
@@ -88,6 +90,8 @@ export async function updateClient(id: string, data: {
   notes?: string
   satisfaction?: number | null
   notesSatisfaction?: string
+  typeEntreprise?: string
+  typePrestataire?: string | null
 }) {
   const session = await getSession()
   const orgId = (session.user as any).organisationId

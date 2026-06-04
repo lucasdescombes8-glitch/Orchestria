@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Save, Trash2 } from 'lucide-react'
+import { Save, Trash2, Building2, Wrench } from 'lucide-react'
 
 interface Client {
   id: string
@@ -21,11 +21,17 @@ interface Client {
   ville?: string | null
   secteur?: string | null
   notes?: string | null
+  typeEntreprise?: string | null
+  typePrestataire?: string | null
 }
 
-export function EditClientForm({ client }: { client: Client }) {
+const DEFAULT_TYPES = ['Traiteur', 'Photographe', 'Technique', 'Photobooth', 'Fleuriste', 'Piano', 'Autre']
+
+export function EditClientForm({ client, typesPrestataire = DEFAULT_TYPES }: { client: Client; typesPrestataire?: string[] }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [typeEntreprise, setTypeEntreprise] = useState<string>(client.typeEntreprise ?? 'CLIENT')
+  const [typePrestataire, setTypePrestataire] = useState<string>(client.typePrestataire ?? '')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -43,6 +49,8 @@ export function EditClientForm({ client }: { client: Client }) {
         ville: formData.get('ville') as string || undefined,
         secteur: formData.get('secteur') as string || undefined,
         notes: formData.get('notes') as string || undefined,
+        typeEntreprise,
+        typePrestataire: typeEntreprise === 'PRESTATAIRE' ? typePrestataire || null : null,
       })
       router.refresh()
     } finally {
@@ -58,6 +66,56 @@ export function EditClientForm({ client }: { client: Client }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Type d'entreprise */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Type d&apos;entreprise</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-3">
+            {(['CLIENT', 'PRESTATAIRE'] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTypeEntreprise(t)}
+                className={`flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all ${
+                  typeEntreprise === t ? 'border-[#C41230] bg-[#FDF2F4]' : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                {t === 'CLIENT'
+                  ? <Building2 className={`h-4 w-4 ${typeEntreprise === t ? 'text-[#C41230]' : 'text-gray-400'}`} />
+                  : <Wrench className={`h-4 w-4 ${typeEntreprise === t ? 'text-[#C41230]' : 'text-gray-400'}`} />
+                }
+                <span className={`text-sm font-medium ${typeEntreprise === t ? 'text-[#C41230]' : 'text-gray-700'}`}>
+                  {t === 'CLIENT' ? 'Client' : 'Prestataire'}
+                </span>
+              </button>
+            ))}
+          </div>
+          {typeEntreprise === 'PRESTATAIRE' && (
+            <div className="mt-3 space-y-2">
+              <Label>Type de prestataire</Label>
+              <div className="flex flex-wrap gap-2">
+                {typesPrestataire.map((tp) => (
+                  <button
+                    key={tp}
+                    type="button"
+                    onClick={() => setTypePrestataire(tp === typePrestataire ? '' : tp)}
+                    className={`px-3 py-1.5 rounded-lg text-sm border transition-all ${
+                      typePrestataire === tp
+                        ? 'bg-[#C41230] text-white border-[#C41230]'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    {tp}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Informations générales</CardTitle>

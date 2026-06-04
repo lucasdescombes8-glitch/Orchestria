@@ -2,16 +2,37 @@ import { getClients } from '@/actions/clients'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Search, Building2, Mail, Phone, MapPin, ChevronRight } from 'lucide-react'
+import { SortableHeader } from '@/components/shared/sortable-header'
+import { Plus, Search, Building2, Wrench, Mail, Phone, MapPin, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function ClientsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string }>
+  searchParams: Promise<{ search?: string; sort?: string; order?: string; type?: string }>
 }) {
   const params = await searchParams
-  const clients = await getClients(params.search)
+  const sort = params.sort ?? 'raisonSociale'
+  const order = params.order ?? 'asc'
+  const typeFilter = params.type
+  const allClients = await getClients(params.search)
+
+  const filteredClients = typeFilter
+    ? allClients.filter((c) => (c as any).typeEntreprise === typeFilter)
+    : allClients
+
+  const clients = [...filteredClients].sort((a, b) => {
+    let va: any, vb: any
+    if (sort === 'raisonSociale') { va = a.raisonSociale; vb = b.raisonSociale }
+    else if (sort === 'ville') { va = a.ville ?? ''; vb = b.ville ?? '' }
+    else if (sort === 'projets') { va = a._count.evenements; vb = b._count.evenements }
+    else { va = a.raisonSociale; vb = b.raisonSociale }
+    if (va < vb) return order === 'asc' ? -1 : 1
+    if (va > vb) return order === 'asc' ? 1 : -1
+    return 0
+  })
+
+  const sp = { search: params.search, sort: params.sort, order: params.order, type: params.type }
 
   return (
     <div className="space-y-6">
@@ -29,17 +50,34 @@ export default async function ClientsPage({
         </Link>
       </div>
 
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-        <form>
-          <Input
-            name="search"
-            placeholder="Rechercher une entreprise..."
-            defaultValue={params.search}
-            className="pl-10"
-          />
-        </form>
+      {/* Search + filters */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="relative max-w-sm flex-1 min-w-[200px]">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <form>
+            <Input
+              name="search"
+              placeholder="Rechercher une entreprise..."
+              defaultValue={params.search}
+              className="pl-10"
+            />
+          </form>
+        </div>
+        <div className="flex gap-2">
+          <Link href={`/clients${params.search ? `?search=${params.search}` : ''}`}>
+            <Button variant={!typeFilter ? 'default' : 'outline'} size="sm">Tous</Button>
+          </Link>
+          <Link href={`/clients?type=CLIENT${params.search ? `&search=${params.search}` : ''}`}>
+            <Button variant={typeFilter === 'CLIENT' ? 'default' : 'outline'} size="sm">
+              <Building2 className="h-3.5 w-3.5 mr-1.5" />Clients
+            </Button>
+          </Link>
+          <Link href={`/clients?type=PRESTATAIRE${params.search ? `&search=${params.search}` : ''}`}>
+            <Button variant={typeFilter === 'PRESTATAIRE' ? 'default' : 'outline'} size="sm">
+              <Wrench className="h-3.5 w-3.5 mr-1.5" />Prestataires
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Grid of cards */}
@@ -86,7 +124,18 @@ export default async function ClientsPage({
                   </div>
                 </div>
                 <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {(client as any).typeEntreprise === 'PRESTATAIRE' ? (
+                      <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100">
+                        <Wrench className="h-2.5 w-2.5 mr-1" />
+                        {(client as any).typePrestataire || 'Prestataire'}
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50">
+                        <Building2 className="h-2.5 w-2.5 mr-1" />
+                        Client
+                      </Badge>
+                    )}
                     {client.secteur && <Badge variant="secondary">{client.secteur}</Badge>}
                   </div>
                   <span className="text-xs text-gray-400 font-medium">

@@ -60,6 +60,8 @@ model Client {
   ville             String?
   secteur           String?
   notes             String?
+  typeEntreprise    String    @default("CLIENT")
+  typePrestataire   String?
   actif             Boolean   @default(true)
   satisfaction      Int?
   notesSatisfaction String?
@@ -299,4 +301,11 @@ model Prestataire {
   actif          Boolean  @default(true)
   createdAt      DateTime @default(now())
   organisation   Organisation @relation(fields: [organisationId], references: [id])
+}
+
+model TypePrestataire {
+  id             String   @id @default(cuid())
+  organisationId String
+  nom            String
+  createdAt      DateTime @default(now())
 }
