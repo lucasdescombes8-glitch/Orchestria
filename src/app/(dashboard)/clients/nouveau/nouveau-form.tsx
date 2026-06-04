@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Save, Search, Loader2, CheckCircle2, AlertCircle, Building2, Wrench, UserPlus, ChevronDown } from 'lucide-react'
+import { PrestataireTypeSelect } from '@/components/shared/prestataire-type-select'
 import Link from 'next/link'
 
 interface PappersResult {
@@ -188,22 +189,7 @@ export function NouveauClientForm({ typesPrestataire = DEFAULT_TYPES }: { typesP
               {typeEntreprise === 'PRESTATAIRE' && (
                 <div className="mt-4 space-y-2">
                   <Label>Type de prestataire</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {typesPrestataire.map((t) => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setTypePrestataire(t === typePrestataire ? '' : t)}
-                        className={`px-3 py-1.5 rounded-lg text-sm border transition-all ${
-                          typePrestataire === t
-                            ? 'bg-[#C41230] text-white border-[#C41230]'
-                            : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                        }`}
-                      >
-                        {t}
-                      </button>
-                    ))}
-                  </div>
+                  <PrestataireTypeSelect types={typesPrestataire} value={typePrestataire} onChange={setTypePrestataire} />
                 </div>
               )}
             </CardContent>
