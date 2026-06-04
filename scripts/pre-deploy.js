@@ -10,23 +10,30 @@ if (!url || !url.startsWith('postgres')) {
 const prismaBin = path.join(__dirname, '..', 'node_modules', '.bin', 'prisma')
 
 async function migrate() {
+  // Use the same adapter pattern as src/lib/prisma.ts
+  const { PrismaNeon } = require('@prisma/adapter-neon')
+  const { neonConfig } = require('@neondatabase/serverless')
+  const ws = require('ws')
   const { PrismaClient } = require('@prisma/client')
-  const prisma = new PrismaClient()
+
+  neonConfig.webSocketConstructor = ws
+  const adapter = new PrismaNeon({ connectionString: url })
+  const prisma = new PrismaClient({ adapter })
 
   try {
-    await prisma.$executeRawUnsafe(
+    const r1 = await prisma.$executeRawUnsafe(
       `UPDATE "Evenement" SET statut = 'OPTION' WHERE statut::text IN ('PROSPECTION','EN_COURS','REALISE')`
     )
-    console.log('✓ StatutEvenement migrated')
+    console.log('✓ StatutEvenement migrated:', r1, 'rows')
   } catch (e) {
     console.log('StatutEvenement skip:', e.message)
   }
 
   try {
-    await prisma.$executeRawUnsafe(
+    const r2 = await prisma.$executeRawUnsafe(
       `UPDATE "Utilisateur" SET role = 'CHEF_PROJET' WHERE role::text IN ('DIRECTEUR','COMMERCIAL','COMPTABLE')`
     )
-    console.log('✓ Role migrated')
+    console.log('✓ Role migrated:', r2, 'rows')
   } catch (e) {
     console.log('Role skip:', e.message)
   }
@@ -34,14 +41,12 @@ async function migrate() {
   await prisma.$disconnect()
 
   console.log('Running prisma db push...')
-  // Use spawnSync with args array to avoid any shell-level flag stripping
   const result = spawnSync(prismaBin, ['db', 'push', '--accept-data-loss'], {
     stdio: 'inherit',
     env: process.env,
   })
 
   if (result.status !== 0) {
-    console.error('prisma db push failed with status', result.status)
     process.exit(result.status ?? 1)
   }
 }
