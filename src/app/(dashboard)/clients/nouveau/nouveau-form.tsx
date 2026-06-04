@@ -2,13 +2,13 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/actions/clients'
+import { createClient, createContact } from '@/actions/clients'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Save, Search, Loader2, CheckCircle2, AlertCircle, Building2, Wrench } from 'lucide-react'
+import { ArrowLeft, Save, Search, Loader2, CheckCircle2, AlertCircle, Building2, Wrench, UserPlus, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 
 interface PappersResult {
@@ -33,6 +33,8 @@ export function NouveauClientForm({ typesPrestataire = DEFAULT_TYPES }: { typesP
   const [siretError, setSiretError] = useState('')
   const [typeEntreprise, setTypeEntreprise] = useState<'CLIENT' | 'PRESTATAIRE'>('CLIENT')
   const [typePrestataire, setTypePrestataire] = useState('')
+  const [showContact, setShowContact] = useState(false)
+  const [contact, setContact] = useState({ prenom: '', nom: '', poste: '', email: '', telephone: '', mobile: '' })
   const [fields, setFields] = useState({
     raisonSociale: '',
     siret: '',
@@ -97,7 +99,7 @@ export function NouveauClientForm({ typesPrestataire = DEFAULT_TYPES }: { typesP
     e.preventDefault()
     setLoading(true)
     try {
-      await createClient({
+      const client = await createClient({
         raisonSociale: fields.raisonSociale,
         siret: fields.siret || undefined,
         email: fields.email || undefined,
@@ -110,6 +112,16 @@ export function NouveauClientForm({ typesPrestataire = DEFAULT_TYPES }: { typesP
         typeEntreprise,
         typePrestataire: typeEntreprise === 'PRESTATAIRE' ? typePrestataire || undefined : undefined,
       })
+      if (showContact && contact.nom.trim()) {
+        await createContact(client.id, {
+          prenom: contact.prenom || '',
+          nom: contact.nom,
+          poste: contact.poste || undefined,
+          email: contact.email || undefined,
+          telephone: contact.telephone || undefined,
+          mobile: contact.mobile || undefined,
+        })
+      }
       router.push('/clients')
     } catch (err) {
       console.error(err)
@@ -315,6 +327,78 @@ export function NouveauClientForm({ typesPrestataire = DEFAULT_TYPES }: { typesP
                 rows={4}
               />
             </CardContent>
+          </Card>
+
+          {/* Contact optionnel */}
+          <Card>
+            <CardHeader>
+              <button
+                type="button"
+                onClick={() => setShowContact((v) => !v)}
+                className="flex items-center justify-between w-full text-left"
+              >
+                <CardTitle className="text-base flex items-center gap-2">
+                  <UserPlus className="h-4 w-4 text-[#C41230]" />
+                  Ajouter un contact
+                  <span className="text-xs font-normal text-gray-400">(optionnel)</span>
+                </CardTitle>
+                <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${showContact ? 'rotate-180' : ''}`} />
+              </button>
+            </CardHeader>
+            {showContact && (
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Prénom</Label>
+                    <Input
+                      value={contact.prenom}
+                      onChange={(e) => setContact((c) => ({ ...c, prenom: e.target.value }))}
+                      placeholder="Jean"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Nom *</Label>
+                    <Input
+                      value={contact.nom}
+                      onChange={(e) => setContact((c) => ({ ...c, nom: e.target.value }))}
+                      placeholder="Dupont"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Poste</Label>
+                  <Input
+                    value={contact.poste}
+                    onChange={(e) => setContact((c) => ({ ...c, poste: e.target.value }))}
+                    placeholder="Directeur commercial, Chargé d'événements..."
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input
+                      type="email"
+                      value={contact.email}
+                      onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Téléphone</Label>
+                    <Input
+                      value={contact.telephone}
+                      onChange={(e) => setContact((c) => ({ ...c, telephone: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Mobile</Label>
+                  <Input
+                    value={contact.mobile}
+                    onChange={(e) => setContact((c) => ({ ...c, mobile: e.target.value }))}
+                  />
+                </div>
+              </CardContent>
+            )}
           </Card>
 
           <div className="flex justify-end gap-3">
