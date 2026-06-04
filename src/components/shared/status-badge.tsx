@@ -1,12 +1,12 @@
 import { Badge } from '@/components/ui/badge'
 
-type StatutEvenement = 'PROSPECTION' | 'OPTION' | 'CONFIRME' | 'EN_COURS' | 'REALISE' | 'ANNULE'
+type StatutEvenement = 'PROSPECTION' | 'OPTION' | 'CONFIRME' | 'EN_COURS' | 'REALISE'
 type StatutDevis = 'BROUILLON' | 'ENVOYE' | 'VU' | 'ACCEPTE' | 'REFUSE' | 'EXPIRE'
 type StatutFacture = 'BROUILLON' | 'EMISE' | 'ENVOYEE' | 'PAYEE' | 'RETARD' | 'ANNULEE'
 type StatutTache = 'A_FAIRE' | 'EN_COURS' | 'TERMINEE' | 'ANNULEE'
 type PrioriteTask = 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE'
 
-const evenementLabels: Record<StatutEvenement, string> = {
+const evenementLabels: Record<string, string> = {
   PROSPECTION: 'Opportunité',
   OPTION: 'Option',
   CONFIRME: 'Confirmé',
@@ -14,7 +14,7 @@ const evenementLabels: Record<StatutEvenement, string> = {
   REALISE: 'Facturation',
 }
 
-const evenementVariants: Record<StatutEvenement, string> = {
+const evenementVariants: Record<string, string> = {
   PROSPECTION: 'secondary',
   OPTION: 'info',
   CONFIRME: 'success',
@@ -86,7 +86,7 @@ const prioriteVariants: Record<PrioriteTask, string> = {
   URGENTE: 'destructive',
 }
 
-export function StatutEvenementBadge({ statut }: { statut: StatutEvenement }) {
+export function StatutEvenementBadge({ statut }: { statut: string }) {
   return (
     <Badge variant={evenementVariants[statut] as any}>
       {evenementLabels[statut]}

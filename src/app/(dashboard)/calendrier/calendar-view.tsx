@@ -93,12 +93,15 @@ const DAY_LABELS_FR = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.']
 
 const STATUT_COLORS: Record<string, string> = {
   PROSPECTION: 'bg-gray-400 text-white',
-  OPTION: 'bg-blue-400 text-white',
-  CONFIRME: 'bg-green-500 text-white',
+  OPTION: 'bg-blue-500 text-white',
+  CONFIRME: 'bg-[#C41230] text-white',
   EN_COURS: 'bg-purple-500 text-white',
   REALISE: 'bg-emerald-500 text-white',
   ANNULE: 'bg-red-400 text-white',
 }
+
+// Only these statuses appear in the Projets section of the calendar
+const CALENDAR_STATUTS = ['OPTION', 'CONFIRME']
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -297,6 +300,72 @@ export function CalendarView({ evenements }: CalendarViewProps) {
             </tr>
           </thead>
           <tbody>
+            {/* ── Projets section: Option (blue) + Confirmé (red) ── */}
+            {days.map((day) => {
+              const weekend = isWeekend(day)
+              const rowBg = weekend ? 'bg-gray-200' : 'bg-white'
+              const label = dayLabel(day)
+              const projetsRows = [
+                { statut: 'OPTION', label: 'Option' },
+                { statut: 'CONFIRME', label: 'Confirmé' },
+              ]
+
+              return projetsRows.map((pr, prIdx) => {
+                const eventsForDay = evenements.filter((ev) => {
+                  if (ev.statut !== pr.statut || !ev.dateDebut) return false
+                  const start = parseISO(ev.dateDebut)
+                  const end = ev.dateFin ? parseISO(ev.dateFin) : start
+                  const d = new Date(day.getFullYear(), day.getMonth(), day.getDate())
+                  const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
+                  const e = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+                  return d >= s && d <= e
+                })
+
+                return (
+                  <tr key={`proj-${day.toISOString()}-${pr.statut}`} className={rowBg}>
+                    {prIdx === 0 && (
+                      <td rowSpan={2} className={`border border-slate-300 px-1 py-0.5 font-medium text-slate-700 whitespace-nowrap align-top ${rowBg}`}>
+                        {label}
+                      </td>
+                    )}
+                    {prIdx === 0 && (
+                      <td rowSpan={2} className="border border-slate-300 px-1 py-0.5 bg-slate-50 font-semibold text-slate-600 align-top whitespace-nowrap text-xs">
+                        Projets
+                      </td>
+                    )}
+                    <td className="border border-slate-300 px-1 py-0.5 text-slate-500 whitespace-nowrap text-xs">
+                      {pr.label}
+                    </td>
+                    {HOURS.map((h) => {
+                      const evHere = eventsForDay.filter((ev) => {
+                        const span = eventHourSpan(ev, day)
+                        return span && span.startHour === h
+                      })
+                      return (
+                        <td key={h} className={`border border-slate-300 px-0 py-0.5 relative ${rowBg}`} style={{ height: 24 }}>
+                          {evHere.map((ev) => {
+                            const span = eventHourSpan(ev, day)
+                            if (!span) return null
+                            return (
+                              <div
+                                key={ev.id}
+                                title={`${ev.nom} — ${ev.client?.raisonSociale ?? ''}`}
+                                className={`absolute inset-y-0 flex items-center px-1 rounded text-xs truncate z-10 opacity-90 ${STATUT_COLORS[ev.statut] || 'bg-blue-400 text-white'}`}
+                                style={{ left: 0, width: `${span.spanHours * 100}%` }}
+                              >
+                                {ev.nom}
+                              </div>
+                            )
+                          })}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })
+            })}
+
+            {/* ── Room rows ── */}
             {days.map((day) => {
               const weekend = isWeekend(day)
               const rowBg = weekend ? 'bg-gray-200' : 'bg-white'
