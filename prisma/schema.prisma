@@ -31,6 +31,7 @@ model Utilisateur {
   email          String   @unique
   nom            String
   prenom         String
+  poste          String?
   motDePasseHash String
   role           Role     @default(COMMERCIAL)
   actif          Boolean  @default(true)
