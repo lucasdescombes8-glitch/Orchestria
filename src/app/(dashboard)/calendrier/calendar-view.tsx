@@ -253,7 +253,7 @@ export function CalendarView({ evenements }: CalendarViewProps) {
 
       {/* ── Action toolbar ── */}
       <div className="flex items-center gap-1 flex-wrap bg-slate-50 border-b border-x border-slate-200 px-3 py-1.5">
-        {['Poser', 'Ouvrir', 'Dupliquer', 'Supprimer', 'Confirmer', 'Annuler', 'Réaliser', 'Participant', 'Dossier', 'Action'].map((label) => (
+        {['Poser', 'Ouvrir', 'Dupliquer', 'Supprimer'].map((label) => (
           <button
             key={label}
             className="px-2 py-0.5 rounded text-xs border border-slate-300 bg-white hover:bg-slate-100 text-slate-700"
