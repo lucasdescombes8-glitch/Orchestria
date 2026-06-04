@@ -22,7 +22,7 @@ export default async function FacturesPage({ searchParams }: Props) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Facturation</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Facturation<span className="text-[#C41230]"> /</span></h1>
           <p className="text-sm text-gray-500 mt-1">{factures.length} facture(s)</p>
         </div>
         <Link href="/factures/nouveau">
@@ -77,7 +77,7 @@ export default async function FacturesPage({ searchParams }: Props) {
               factures.map((f) => (
                 <TableRow key={f.id}>
                   <TableCell>
-                    <p className="font-mono text-sm font-medium text-indigo-600">{f.numero}</p>
+                    <p className="font-mono text-sm font-medium text-[#C41230]">{f.numero}</p>
                   </TableCell>
                   <TableCell>
                     <div>

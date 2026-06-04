@@ -8,7 +8,7 @@ export default function DashboardError({ error }: { error: Error }) {
       <pre className="text-sm text-red-600 bg-red-50 p-4 rounded-lg max-w-2xl overflow-auto">
         {error.message}
       </pre>
-      <a href="/" className="text-indigo-600 underline">Recharger</a>
+      <a href="/" className="text-[#C41230] underline">Recharger</a>
     </div>
   )
 }

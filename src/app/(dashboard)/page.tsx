@@ -23,7 +23,7 @@ export default async function DashboardPage() {
   if (!orgId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-gray-500">Session invalide. <a href="/login" className="text-indigo-600 underline">Se reconnecter</a></p>
+        <p className="text-gray-500">Session invalide. <a href="/login" className="text-[#C41230] underline">Se reconnecter</a></p>
       </div>
     )
   }
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tableau de bord</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Tableau de bord<span className="text-[#C41230]"> /</span></h1>
           <p className="text-gray-500 text-sm mt-1">{format(new Date(), 'EEEE d MMMM yyyy', { locale: fr })}</p>
         </div>
 
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
                       <span className="font-medium">{count}</span>
                     </div>
                     <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${(count / max) * 100}%` }} />
+                      <div className="h-full bg-[#C41230] rounded-full" style={{ width: `${(count / max) * 100}%` }} />
                     </div>
                   </div>
                 )
@@ -156,7 +156,7 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-base">Événements récents</CardTitle>
-              <Link href="/evenements" className="text-sm text-indigo-600 hover:underline">Voir tout</Link>
+              <Link href="/evenements" className="text-sm text-[#C41230] hover:underline">Voir tout</Link>
             </CardHeader>
             <CardContent className="space-y-3">
               {recentEvenements.length === 0 ? (
@@ -185,7 +185,7 @@ export default async function DashboardPage() {
                   </span>
                 )}
               </CardTitle>
-              <Link href="/taches" className="text-sm text-indigo-600 hover:underline">Voir tout</Link>
+              <Link href="/taches" className="text-sm text-[#C41230] hover:underline">Voir tout</Link>
             </CardHeader>
             <CardContent className="space-y-2">
               {tachesAujourdhui.length === 0 && tachesEnRetard.length === 0 ? (
@@ -201,7 +201,7 @@ export default async function DashboardPage() {
                   ))}
                   {tachesAujourdhui.map((t) => (
                     <div key={t.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-                      <div className="h-2 w-2 rounded-full bg-indigo-500 shrink-0" />
+                      <div className="h-2 w-2 rounded-full bg-[#C41230] shrink-0" />
                       <p className="text-sm text-gray-700 flex-1 truncate">{t.titre}</p>
                       <StatutTacheBadge statut={t.statut} />
                     </div>
@@ -221,7 +221,7 @@ export default async function DashboardPage() {
         <pre className="text-sm text-red-600 bg-red-50 p-4 rounded-lg max-w-2xl w-full overflow-auto">
           {error?.message ?? String(error)}
         </pre>
-        <p className="text-gray-500 text-sm">Si c'est la première utilisation, allez d'abord sur <a href="/api/setup" className="text-indigo-600 underline">/api/setup</a></p>
+        <p className="text-gray-500 text-sm">Si c'est la première utilisation, allez d'abord sur <a href="/api/setup" className="text-[#C41230] underline">/api/setup</a></p>
       </div>
     )
   }

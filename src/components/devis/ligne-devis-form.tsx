@@ -153,7 +153,7 @@ export function LignesDevisForm({ initialLignes = [], onChange }: LignesDevisFor
         </div>
         <div className="flex justify-between text-base font-bold border-t pt-2">
           <span>Total TTC</span>
-          <span className="text-indigo-600">{formatCurrency(totalTtc)}</span>
+          <span className="text-[#C41230]">{formatCurrency(totalTtc)}</span>
         </div>
       </div>
     </div>

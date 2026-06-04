@@ -22,7 +22,7 @@ export default async function DevisPage({ searchParams }: Props) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Devis</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Devis<span className="text-[#C41230]"> /</span></h1>
           <p className="text-sm text-gray-500 mt-1">{devis.length} devis</p>
         </div>
         <Link href="/devis/nouveau">
@@ -77,7 +77,7 @@ export default async function DevisPage({ searchParams }: Props) {
               devis.map((d) => (
                 <TableRow key={d.id}>
                   <TableCell>
-                    <p className="font-mono text-sm font-medium text-indigo-600">{d.numero}</p>
+                    <p className="font-mono text-sm font-medium text-[#C41230]">{d.numero}</p>
                   </TableCell>
                   <TableCell>
                     <div>

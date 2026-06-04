@@ -82,7 +82,7 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
         return (
           <div
             key={key}
-            className={`flex-shrink-0 w-64 rounded-xl border-2 ${dragOver === key ? 'border-indigo-400 bg-indigo-50' : color} transition-colors`}
+            className={`flex-shrink-0 w-64 rounded-xl border-2 ${dragOver === key ? 'border-[#C41230] bg-[#FDF2F4]' : color} transition-colors`}
             onDragOver={(e) => handleDragOver(e, key)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, key)}
@@ -105,7 +105,7 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
                   className={`bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow ${dragging === ev.id ? 'opacity-50' : ''}`}
                 >
                   <Link href={`/evenements/${ev.id}`} onClick={(e) => e.stopPropagation()}>
-                    <p className="font-medium text-sm text-gray-900 mb-1 hover:text-indigo-600 transition-colors">
+                    <p className="font-medium text-sm text-gray-900 mb-1 hover:text-[#C41230] transition-colors">
                       {ev.nom}
                     </p>
                   </Link>
@@ -133,7 +133,7 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
                     )}
                   </div>
                   {ev.budgetIndicatif && (
-                    <div className="mt-2 text-xs font-medium text-indigo-600">
+                    <div className="mt-2 text-xs font-medium text-[#C41230]">
                       {formatCurrency(ev.budgetIndicatif)}
                     </div>
                   )}

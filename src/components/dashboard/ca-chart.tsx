@@ -16,7 +16,7 @@ const Chart = dynamic(
               formatter={(value) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
               contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb' }}
             />
-            <Bar dataKey="ca" fill="#6366f1" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="ca" fill="#C41230" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       )

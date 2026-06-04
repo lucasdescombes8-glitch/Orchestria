@@ -35,7 +35,7 @@ export default async function ClientDetailPage({ params }: Props) {
             </Button>
           </Link>
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-indigo-50 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-xl bg-[#FDF2F4] flex items-center justify-center">
               <Building2 className="h-6 w-6 text-indigo-600" />
             </div>
             <div>

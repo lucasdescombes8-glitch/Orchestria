@@ -40,10 +40,10 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* Logo */}
       <div className="flex items-center justify-between px-6 py-5 border-b border-slate-700">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+          <div className="h-8 w-8 rounded-lg bg-[#C41230] flex items-center justify-center">
             <span className="text-white font-bold text-sm">O</span>
           </div>
-          <span className="font-semibold text-lg">Orchestria</span>
+          <span className="font-semibold text-lg">Orchestria <span className="text-[#C41230]">/</span></span>
         </div>
         {onClose && (
           <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white">
@@ -68,7 +68,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-indigo-600 text-white'
+                  ? 'bg-[#C41230] text-white'
                   : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               )}
             >

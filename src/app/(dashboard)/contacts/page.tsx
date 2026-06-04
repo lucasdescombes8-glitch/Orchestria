@@ -24,7 +24,7 @@ export default async function ContactsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Contacts</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Contacts<span className="text-[#C41230]"> /</span></h1>
         <p className="text-sm text-gray-500 mt-1">{contacts.length} contact(s)</p>
       </div>
 
@@ -57,7 +57,7 @@ export default async function ContactsPage() {
                   <TableCell className="text-sm text-gray-600">{c.poste ?? '—'}</TableCell>
                   <TableCell>
                     {c.email && (
-                      <a href={`mailto:${c.email}`} className="flex items-center gap-1 text-sm text-indigo-600 hover:underline">
+                      <a href={`mailto:${c.email}`} className="flex items-center gap-1 text-sm text-[#C41230] hover:underline">
                         <Mail className="h-3 w-3" />
                         {c.email}
                       </a>
@@ -80,7 +80,7 @@ export default async function ContactsPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/clients/${c.client.id}`} className="flex items-center gap-1 text-sm text-indigo-600 hover:underline">
+                    <Link href={`/clients/${c.client.id}`} className="flex items-center gap-1 text-sm text-[#C41230] hover:underline">
                       <Building2 className="h-3 w-3" />
                       {c.client.raisonSociale}
                     </Link>

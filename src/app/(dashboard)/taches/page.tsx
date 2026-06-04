@@ -21,7 +21,7 @@ export default async function TachesPage({ searchParams }: Props) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tâches</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Tâches<span className="text-[#C41230]"> /</span></h1>
           <p className="text-sm text-gray-500 mt-1">{taches.length} tâche(s)</p>
         </div>
         <NewTacheDialog />
@@ -76,7 +76,7 @@ export default async function TachesPage({ searchParams }: Props) {
                   <TableCell className="text-sm text-gray-600">{formatDate(t.dueDate)}</TableCell>
                   <TableCell className="text-sm text-gray-600">
                     {t.evenement ? (
-                      <Link href={`/evenements/${t.evenement.id}`} className="hover:text-indigo-600">
+                      <Link href={`/evenements/${t.evenement.id}`} className="hover:text-[#C41230]">
                         {t.evenement.nom}
                       </Link>
                     ) : '—'}

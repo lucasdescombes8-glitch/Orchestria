@@ -40,7 +40,7 @@ export default async function PipelinePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Pipeline</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Pipeline<span className="text-[#C41230]"> /</span></h1>
         <p className="text-sm text-gray-500 mt-1">Vue d&apos;ensemble du pipeline commercial</p>
       </div>
 
@@ -75,7 +75,7 @@ export default async function PipelinePage() {
             <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {items.map((ev) => (
                 <Link key={ev.id} href={`/evenements/${ev.id}`}>
-                  <Card className="hover:border-indigo-200 transition-colors cursor-pointer">
+                  <Card className="hover:border-[#C41230]/20 transition-colors cursor-pointer">
                     <CardContent className="p-4">
                       <p className="font-medium text-gray-900 mb-1">{ev.nom}</p>
                       <div className="space-y-1 text-xs text-gray-500">

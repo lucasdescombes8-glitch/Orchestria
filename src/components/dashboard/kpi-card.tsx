@@ -16,7 +16,7 @@ interface KpiCardProps {
 
 export function KpiCard({ title, value, subtitle, icon: Icon, trend, color = 'indigo' }: KpiCardProps) {
   const colorMap = {
-    indigo: 'bg-indigo-50 text-indigo-600',
+    indigo: 'bg-[#FDF2F4] text-[#C41230]',
     green: 'bg-green-50 text-green-600',
     yellow: 'bg-yellow-50 text-yellow-600',
     red: 'bg-red-50 text-red-600',

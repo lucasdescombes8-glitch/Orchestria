@@ -20,7 +20,7 @@ export default async function ClientsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Clients<span className="text-[#C41230]"> /</span></h1>
           <p className="text-sm text-gray-500 mt-1">{clients.length} client(s)</p>
         </div>
         <Link href="/clients/nouveau">
@@ -70,8 +70,8 @@ export default async function ClientsPage({
                 <TableRow key={client.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                        <Building2 className="h-4 w-4 text-indigo-600" />
+                      <div className="h-9 w-9 rounded-lg bg-[#FDF2F4] flex items-center justify-center shrink-0">
+                        <Building2 className="h-4 w-4 text-[#C41230]" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{client.raisonSociale}</p>
