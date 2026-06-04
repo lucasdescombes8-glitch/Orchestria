@@ -53,7 +53,7 @@ export default async function ClientsPage({
               <TableHead>Contact</TableHead>
               <TableHead>Localisation</TableHead>
               <TableHead>Secteur</TableHead>
-              <TableHead>Événements</TableHead>
+              <TableHead>Projets</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>

@@ -104,8 +104,8 @@ export default async function DashboardPage() {
     )
 
     const pipelineLabels: Record<string, string> = {
-      PROSPECTION: 'Prospection', OPTION: 'Option', CONFIRME: 'Confirmé',
-      EN_COURS: 'En cours', REALISE: 'Réalisé', ANNULE: 'Annulé',
+      PROSPECTION: 'Opportunité', OPTION: 'Option', CONFIRME: 'Confirmé',
+      EN_COURS: 'En cours', REALISE: 'Réalisé', 
     }
 
     return (
@@ -119,7 +119,7 @@ export default async function DashboardPage() {
           <KpiCard title="CA du mois" value={formatCurrency(caMois)} icon={Euro} color="indigo"
             trend={caLastMois > 0 ? { value: `${Math.abs(Math.round(((caMois - caLastMois) / caLastMois) * 100))}% vs mois dernier`, positive: caMois >= caLastMois } : undefined}
           />
-          <KpiCard title="Événements actifs" value={String(evenementsActifs)} icon={Calendar} color="green" />
+          <KpiCard title="Projets actifs" value={String(evenementsActifs)} icon={Calendar} color="green" />
           <KpiCard title="Devis en attente" value={String(devisEnAttente)} icon={FileText} color="yellow" />
           <KpiCard title="Taux de conversion" value={`${tauxConversion}%`} subtitle={`${devisAcceptes} / ${totalDevis} devis`} icon={TrendingUp} color="indigo" />
         </div>
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader><CardTitle className="text-base">Pipeline événements</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              {['PROSPECTION', 'OPTION', 'CONFIRME', 'EN_COURS', 'REALISE', 'ANNULE'].map((statut) => {
+              {['PROSPECTION', 'OPTION', 'CONFIRME', 'EN_COURS', 'REALISE'].map((statut) => {
                 const item = pipeline.find((p) => p.statut === statut)
                 const count = item?._count ?? 0
                 const max = Math.max(...pipeline.map((p) => p._count), 1)
@@ -155,7 +155,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-base">Événements récents</CardTitle>
+              <CardTitle className="text-base">Projets récents</CardTitle>
               <Link href="/evenements" className="text-sm text-[#C41230] hover:underline">Voir tout</Link>
             </CardHeader>
             <CardContent className="space-y-3">

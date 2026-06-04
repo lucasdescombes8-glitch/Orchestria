@@ -91,7 +91,7 @@ export default async function ClientDetailPage({ params }: Props) {
             Contacts ({client.contacts.length})
           </TabsTrigger>
           <TabsTrigger value="evenements">
-            Événements ({client.evenements.length})
+            Projets ({client.evenements.length})
           </TabsTrigger>
         </TabsList>
 

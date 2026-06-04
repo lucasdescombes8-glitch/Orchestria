@@ -7,12 +7,11 @@ type StatutTache = 'A_FAIRE' | 'EN_COURS' | 'TERMINEE' | 'ANNULEE'
 type PrioriteTask = 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE'
 
 const evenementLabels: Record<StatutEvenement, string> = {
-  PROSPECTION: 'Prospection',
+  PROSPECTION: 'Opportunité',
   OPTION: 'Option',
   CONFIRME: 'Confirmé',
   EN_COURS: 'En cours',
   REALISE: 'Réalisé',
-  ANNULE: 'Annulé',
 }
 
 const evenementVariants: Record<StatutEvenement, string> = {
@@ -21,7 +20,6 @@ const evenementVariants: Record<StatutEvenement, string> = {
   CONFIRME: 'success',
   EN_COURS: 'purple',
   REALISE: 'success',
-  ANNULE: 'destructive',
 }
 
 const devisLabels: Record<StatutDevis, string> = {

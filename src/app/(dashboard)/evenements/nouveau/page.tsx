@@ -28,7 +28,7 @@ const TYPES = [
 ]
 
 const STATUTS = [
-  { value: 'PROSPECTION', label: 'Prospection' },
+  { value: 'PROSPECTION', label: 'Opportunité' },
   { value: 'OPTION', label: 'Option' },
   { value: 'CONFIRME', label: 'Confirmé' },
   { value: 'EN_COURS', label: 'En cours' },
