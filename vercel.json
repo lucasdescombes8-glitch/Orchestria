@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build",
+  "env": {
+    "VERCEL_GIT_DISABLE_SUBMODULES": "1"
+  },
+  "build": {
+    "env": {
+      "VERCEL_GIT_DISABLE_SUBMODULES": "1"
+    }
+  }
+}
