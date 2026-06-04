@@ -13,7 +13,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 
 const TYPES = [
@@ -43,10 +43,24 @@ function NouvelEvenementForm() {
   const [type, setType] = useState('AUTRE')
   const [statut, setStatut] = useState('PROSPECTION')
   const [clientId, setClientId] = useState(prefilledClientId || '')
+  const [typeHoraire, setTypeHoraire] = useState('STANDARD')
+  const [conflits, setConflits] = useState<Array<{ id: string; nom: string; statut: string; dateDebut: string | null; lieu: string | null }>>([])
+  const [dateDebutValue, setDateDebutValue] = useState('')
+  const [dateFinValue, setDateFinValue] = useState('')
 
   useEffect(() => {
     getClients().then((c) => setClients(c.map((cl) => ({ id: cl.id, raisonSociale: cl.raisonSociale }))))
   }, [])
+
+  useEffect(() => {
+    if (!dateDebutValue) { setConflits([]); return }
+    const params = new URLSearchParams({ dateDebut: dateDebutValue })
+    if (dateFinValue) params.set('dateFin', dateFinValue)
+    fetch(`/api/conflits?${params}`)
+      .then((r) => r.json())
+      .then((d) => setConflits(d.conflits ?? []))
+      .catch(() => {})
+  }, [dateDebutValue, dateFinValue])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -60,6 +74,9 @@ function NouvelEvenementForm() {
         statut,
         dateDebut: formData.get('dateDebut') as string || undefined,
         dateFin: formData.get('dateFin') as string || undefined,
+        heureDebut: formData.get('heureDebut') as string || undefined,
+        heureFin: formData.get('heureFin') as string || undefined,
+        typeHoraire,
         nombreParticipants: formData.get('nombreParticipants') ? Number(formData.get('nombreParticipants')) : undefined,
         budgetIndicatif: formData.get('budgetIndicatif') ? Number(formData.get('budgetIndicatif')) : undefined,
         lieu: formData.get('lieu') as string || undefined,
@@ -128,16 +145,51 @@ function NouvelEvenementForm() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dateDebut">Date de début</Label>
-                <Input id="dateDebut" name="dateDebut" type="datetime-local" />
+                <Input id="dateDebut" name="dateDebut" type="datetime-local" value={dateDebutValue} onChange={(e) => setDateDebutValue(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dateFin">Date de fin</Label>
-                <Input id="dateFin" name="dateFin" type="datetime-local" />
+                <Input id="dateFin" name="dateFin" type="datetime-local" value={dateFinValue} onChange={(e) => setDateFinValue(e.target.value)} />
               </div>
             </div>
+            {conflits.length > 0 && (
+              <div className="flex items-start gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <AlertTriangle className="h-4 w-4 text-orange-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-orange-800">Conflit de réservation détecté</p>
+                  <ul className="mt-1 space-y-0.5">
+                    {conflits.map((c) => (
+                      <li key={c.id} className="text-xs text-orange-700">• {c.nom} ({c.statut})</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="lieu">Lieu</Label>
               <Input id="lieu" name="lieu" placeholder="Ville, salle, adresse..." />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="heureDebut">Heure de début</Label>
+                <Input id="heureDebut" name="heureDebut" type="time" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="heureFin">Heure de fin</Label>
+                <Input id="heureFin" name="heureFin" type="time" />
+              </div>
+              <div className="space-y-2">
+                <Label>Type d&apos;horaire</Label>
+                <Select value={typeHoraire} onValueChange={setTypeHoraire}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="STANDARD">Standard</SelectItem>
+                    <SelectItem value="NUIT">Nuit</SelectItem>
+                    <SelectItem value="FERIE">Jour férié</SelectItem>
+                    <SelectItem value="HEURES_SUP">Heures sup</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>

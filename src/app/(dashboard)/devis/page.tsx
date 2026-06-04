@@ -2,8 +2,9 @@ import { getDevis } from '@/actions/devis'
 import { Button } from '@/components/ui/button'
 import { StatutDevisBadge } from '@/components/shared/status-badge'
 import { formatDate, formatCurrency } from '@/lib/utils'
-import { Plus, FileText } from 'lucide-react'
+import { Plus, FileText, Clock } from 'lucide-react'
 import Link from 'next/link'
+import { differenceInDays } from 'date-fns'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
@@ -93,7 +94,17 @@ export default async function DevisPage({ searchParams }: Props) {
                   <TableCell className="text-sm text-gray-600">{formatDate(d.dateEmission)}</TableCell>
                   <TableCell className="text-sm text-gray-600">{formatDate(d.dateValidite)}</TableCell>
                   <TableCell className="text-right font-medium">{formatCurrency(d.totalTtc)}</TableCell>
-                  <TableCell><StatutDevisBadge statut={d.statut} /></TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <StatutDevisBadge statut={d.statut} />
+                      {['ENVOYE', 'VU'].includes(d.statut) && d.dateEmission && (
+                        <span className={`flex items-center gap-1 text-xs px-1.5 py-0.5 rounded font-medium ${differenceInDays(new Date(), new Date(d.dateEmission)) >= 14 ? 'bg-red-100 text-red-700' : differenceInDays(new Date(), new Date(d.dateEmission)) >= 7 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-500'}`}>
+                          <Clock className="h-3 w-3" />
+                          {differenceInDays(new Date(), new Date(d.dateEmission))}j
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Link href={`/devis/${d.id}`}>
                       <Button variant="ghost" size="sm">Voir</Button>

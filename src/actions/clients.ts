@@ -86,6 +86,8 @@ export async function updateClient(id: string, data: {
   ville?: string
   secteur?: string
   notes?: string
+  satisfaction?: number | null
+  notesSatisfaction?: string
 }) {
   const session = await getSession()
   const orgId = (session.user as any).organisationId

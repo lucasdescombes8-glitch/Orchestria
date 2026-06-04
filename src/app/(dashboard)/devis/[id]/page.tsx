@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StatutDevisBadge } from '@/components/shared/status-badge'
 import { formatDate, formatCurrency } from '@/lib/utils'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
@@ -17,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {
   ArrowLeft, Printer, ChevronDown, Send, Check, X as XIcon,
-  Receipt, Trash2
+  Receipt, Trash2, AlertCircle
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -28,6 +30,9 @@ export default function DevisDetailPage() {
   const router = useRouter()
   const [devis, setDevis] = useState<Devis>(null)
   const [loading, setLoading] = useState(true)
+  const [showRefusModal, setShowRefusModal] = useState(false)
+  const [motifRefus, setMotifRefus] = useState('')
+  const [savingRefus, setSavingRefus] = useState(false)
 
   async function load() {
     const d = await getDevisById(id)
@@ -40,6 +45,18 @@ export default function DevisDetailPage() {
   async function handleStatut(statut: string) {
     await updateDevisStatut(id, statut)
     await load()
+  }
+
+  async function handleRefus() {
+    setSavingRefus(true)
+    try {
+      await updateDevisStatut(id, 'REFUSE', motifRefus || undefined)
+      setShowRefusModal(false)
+      setMotifRefus('')
+      await load()
+    } finally {
+      setSavingRefus(false)
+    }
   }
 
   async function handleFacture() {
@@ -64,6 +81,41 @@ export default function DevisDetailPage() {
 
   return (
     <div className="space-y-6">
+      {/* Refus Modal */}
+      {showRefusModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              <h2 className="text-lg font-bold text-gray-900">Motif de refus</h2>
+            </div>
+            <p className="text-sm text-gray-500">Indiquez optionnellement la raison du refus de ce devis.</p>
+            <div className="space-y-2">
+              <Label htmlFor="motifRefus">Motif (optionnel)</Label>
+              <Textarea
+                id="motifRefus"
+                value={motifRefus}
+                onChange={(e) => setMotifRefus(e.target.value)}
+                rows={3}
+                placeholder="Ex: Budget insuffisant, proposition concurrente..."
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => { setShowRefusModal(false); setMotifRefus('') }}>
+                Annuler
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleRefus}
+                disabled={savingRefus}
+              >
+                {savingRefus ? 'Enregistrement...' : 'Confirmer le refus'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
@@ -114,7 +166,7 @@ export default function DevisDetailPage() {
                     <Check className="h-4 w-4 mr-2 text-green-600" />
                     Marquer comme accepté
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleStatut('REFUSE')}>
+                  <DropdownMenuItem onClick={() => setShowRefusModal(true)}>
                     <XIcon className="h-4 w-4 mr-2 text-red-500" />
                     Marquer comme refusé
                   </DropdownMenuItem>
@@ -128,6 +180,17 @@ export default function DevisDetailPage() {
           </DropdownMenu>
         </div>
       </div>
+
+      {/* Motif de refus banner */}
+      {devis.statut === 'REFUSE' && (devis as any).motifRefus && (
+        <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-red-800">Motif de refus</p>
+            <p className="text-sm text-red-700 mt-1">{(devis as any).motifRefus}</p>
+          </div>
+        </div>
+      )}
 
       {/* Print-friendly layout */}
       <div className="print:block">

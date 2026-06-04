@@ -115,6 +115,21 @@ export default async function DashboardPage() {
           <p className="text-gray-500 text-sm mt-1">{format(new Date(), 'EEEE d MMMM yyyy', { locale: fr })}</p>
         </div>
 
+        {tachesEnRetard.length > 0 && (
+          <div className="flex items-start gap-3 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl">
+            <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="font-semibold text-red-800">{tachesEnRetard.length} tâche{tachesEnRetard.length > 1 ? 's' : ''} en retard</p>
+              <ul className="mt-1 space-y-0.5">
+                {tachesEnRetard.map((t) => (
+                  <li key={t.id} className="text-sm text-red-700">• {t.titre}</li>
+                ))}
+              </ul>
+            </div>
+            <Link href="/taches" className="text-sm text-red-700 font-medium hover:underline whitespace-nowrap">Voir les tâches</Link>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard title="CA du mois" value={formatCurrency(caMois)} icon={Euro} color="indigo"
             trend={caLastMois > 0 ? { value: `${Math.abs(Math.round(((caMois - caLastMois) / caLastMois) * 100))}% vs mois dernier`, positive: caMois >= caLastMois } : undefined}

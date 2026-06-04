@@ -109,6 +109,7 @@ export default async function EvenementDetailPage({ params }: Props) {
       <Tabs defaultValue="infos">
         <TabsList>
           <TabsTrigger value="infos">Informations</TabsTrigger>
+          <TabsTrigger value="brief">Brief opérationnel</TabsTrigger>
           <TabsTrigger value="devis">Devis ({ev.devis.length})</TabsTrigger>
           <TabsTrigger value="factures">Factures ({ev.factures.length})</TabsTrigger>
           <TabsTrigger value="taches">Tâches ({ev.taches.length})</TabsTrigger>
@@ -141,6 +142,67 @@ export default async function EvenementDetailPage({ params }: Props) {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="brief" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle className="text-base">Brief opérationnel</CardTitle></CardHeader>
+            <CardContent className="space-y-4 text-sm text-gray-700">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 mb-1">Événement</p>
+                  <p className="font-semibold">{ev.nom}</p>
+                  <p className="text-gray-500">{typeLabels[ev.type] ?? ev.type}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 mb-1">Client</p>
+                  <p className="font-semibold">{ev.client?.raisonSociale ?? '—'}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 mb-1">Dates</p>
+                  <p>{formatDate(ev.dateDebut)} → {formatDate(ev.dateFin)}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 mb-1">Lieu</p>
+                  <p>{ev.lieu ?? '—'}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 mb-1">Participants</p>
+                  <p>{ev.nombreParticipants ?? '—'}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs font-medium text-gray-500 mb-1">Budget indicatif</p>
+                  <p>{ev.budgetIndicatif ? formatCurrency(ev.budgetIndicatif) : '—'}</p>
+                </div>
+              </div>
+              {ev.brief && (
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                  <p className="text-xs font-medium text-blue-600 mb-1">Brief client</p>
+                  <p className="whitespace-pre-line">{ev.brief}</p>
+                </div>
+              )}
+              {ev.notes && (
+                <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                  <p className="text-xs font-medium text-yellow-600 mb-1">Notes internes</p>
+                  <p className="whitespace-pre-line">{ev.notes}</p>
+                </div>
+              )}
+              {ev.taches.length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-2">Tâches associées ({ev.taches.length})</p>
+                  <ul className="space-y-1">
+                    {ev.taches.map((t) => (
+                      <li key={t.id} className="flex items-center gap-2 text-xs">
+                        <span className={`h-2 w-2 rounded-full shrink-0 ${t.statut === 'TERMINEE' ? 'bg-green-500' : t.statut === 'EN_COURS' ? 'bg-blue-500' : 'bg-gray-300'}`} />
+                        <span className={t.statut === 'TERMINEE' ? 'line-through text-gray-400' : ''}>{t.titre}</span>
+                        {t.dueDate && <span className="text-gray-400">· {formatDate(t.dueDate)}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="devis" className="mt-4">

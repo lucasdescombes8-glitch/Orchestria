@@ -12,6 +12,7 @@ import {
   TrendingUp,
   CheckSquare,
   Building2,
+  Settings,
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -26,6 +27,7 @@ const navItems = [
   { href: '/calendrier', label: 'Calendrier', icon: CalendarDays },
   { href: '/pipeline', label: 'Pipeline', icon: TrendingUp },
   { href: '/taches', label: 'Tâches', icon: CheckSquare },
+  { href: '/parametres', label: 'Paramètres', icon: Settings },
 ]
 
 interface SidebarProps {

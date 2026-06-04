@@ -13,6 +13,7 @@ import {
 import Link from 'next/link'
 import { ContactForm } from './contact-form'
 import { EditClientForm } from './edit-client-form'
+import { SatisfactionForm } from './satisfaction-form'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -93,10 +94,19 @@ export default async function ClientDetailPage({ params }: Props) {
           <TabsTrigger value="evenements">
             Projets ({client.evenements.length})
           </TabsTrigger>
+          <TabsTrigger value="satisfaction">Satisfaction</TabsTrigger>
         </TabsList>
 
         <TabsContent value="infos" className="mt-4">
           <EditClientForm client={client} />
+        </TabsContent>
+
+        <TabsContent value="satisfaction" className="mt-4">
+          <SatisfactionForm
+            clientId={client.id}
+            initialSatisfaction={(client as any).satisfaction}
+            initialNotes={(client as any).notesSatisfaction}
+          />
         </TabsContent>
 
         <TabsContent value="contacts" className="mt-4">

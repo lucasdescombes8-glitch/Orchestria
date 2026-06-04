@@ -133,13 +133,13 @@ export async function updateDevis(id: string, data: {
   return devis
 }
 
-export async function updateDevisStatut(id: string, statut: string) {
+export async function updateDevisStatut(id: string, statut: string, motifRefus?: string) {
   const session = await getSession()
   const orgId = (session.user as any).organisationId
 
   await prisma.devis.update({
     where: { id, organisationId: orgId },
-    data: { statut: statut as any },
+    data: { statut: statut as any, ...(motifRefus !== undefined ? { motifRefus } : {}) },
   })
 
   revalidatePath('/devis')

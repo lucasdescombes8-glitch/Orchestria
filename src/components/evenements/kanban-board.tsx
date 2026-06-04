@@ -36,6 +36,9 @@ interface Evenement {
   type: string
   dateDebut?: Date | null
   dateFin?: Date | null
+  heureDebut?: string | null
+  heureFin?: string | null
+  typeHoraire?: string | null
   lieu?: string | null
   nombreParticipants?: number | null
   budgetIndicatif?: number | null
@@ -67,6 +70,9 @@ function EditModal({ ev, onClose, onSaved }: {
     statut: ev.statut,
     dateDebut: toDateInput(ev.dateDebut),
     dateFin: toDateInput(ev.dateFin),
+    heureDebut: ev.heureDebut ?? '',
+    heureFin: ev.heureFin ?? '',
+    typeHoraire: ev.typeHoraire ?? 'STANDARD',
     lieu: ev.lieu ?? '',
     nombreParticipants: ev.nombreParticipants?.toString() ?? '',
     budgetIndicatif: ev.budgetIndicatif?.toString() ?? '',
@@ -88,6 +94,9 @@ function EditModal({ ev, onClose, onSaved }: {
         statut: form.statut,
         dateDebut: form.dateDebut || null,
         dateFin: form.dateFin || null,
+        heureDebut: form.heureDebut || undefined,
+        heureFin: form.heureFin || undefined,
+        typeHoraire: form.typeHoraire || undefined,
         lieu: form.lieu || undefined,
         nombreParticipants: form.nombreParticipants ? Number(form.nombreParticipants) : undefined,
         budgetIndicatif: form.budgetIndicatif ? Number(form.budgetIndicatif) : undefined,
@@ -188,6 +197,30 @@ function EditModal({ ev, onClose, onSaved }: {
           <div className="space-y-1">
             <Label>Lieu</Label>
             <Input value={form.lieu} onChange={(e) => set('lieu', e.target.value)} placeholder="Salle, adresse..." />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <Label>Heure de début</Label>
+              <Input type="time" value={form.heureDebut} onChange={(e) => set('heureDebut', e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label>Heure de fin</Label>
+              <Input type="time" value={form.heureFin} onChange={(e) => set('heureFin', e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label>Type d&apos;horaire</Label>
+              <select
+                value={form.typeHoraire}
+                onChange={(e) => set('typeHoraire', e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C41230]"
+              >
+                <option value="STANDARD">Standard</option>
+                <option value="NUIT">Nuit</option>
+                <option value="FERIE">Jour férié</option>
+                <option value="HEURES_SUP">Heures sup</option>
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
