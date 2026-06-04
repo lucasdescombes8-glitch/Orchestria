@@ -43,7 +43,7 @@ function NouvelEvenementForm() {
   const [type, setType] = useState('AUTRE')
   const [statut, setStatut] = useState('PROSPECTION')
   const [clientId, setClientId] = useState(prefilledClientId || '')
-  const [typeHoraire, setTypeHoraire] = useState('STANDARD')
+  const [sallesSelectionnees, setSallesSelectionnees] = useState<string[]>([])
   const [conflits, setConflits] = useState<Array<{ id: string; nom: string; statut: string; dateDebut: string | null; lieu: string | null }>>([])
   const [dateDebutValue, setDateDebutValue] = useState('')
   const [dateFinValue, setDateFinValue] = useState('')
@@ -124,12 +124,13 @@ function NouvelEvenementForm() {
         statut,
         dateDebut: formData.get('dateDebut') as string || undefined,
         dateFin: formData.get('dateFin') as string || undefined,
-        heureDebut: formData.get('heureDebut') as string || undefined,
-        heureFin: formData.get('heureFin') as string || undefined,
-        typeHoraire,
+        heureDebutMontage: formData.get('heureDebutMontage') as string || undefined,
+        heureDebutEvenement: formData.get('heureDebutEvenement') as string || undefined,
+        heureFinEvenement: formData.get('heureFinEvenement') as string || undefined,
+        heureFinDemontage: formData.get('heureFinDemontage') as string || undefined,
         nombreParticipants: formData.get('nombreParticipants') ? Number(formData.get('nombreParticipants')) : undefined,
         budgetIndicatif: formData.get('budgetIndicatif') ? Number(formData.get('budgetIndicatif')) : undefined,
-        lieu: formData.get('lieu') as string || undefined,
+        salles: sallesSelectionnees.length > 0 ? sallesSelectionnees.join(',') : undefined,
         brief: formData.get('brief') as string || undefined,
         notes: formData.get('notes') as string || undefined,
         clientId: clientId && clientId !== '_none' ? clientId : undefined,
@@ -347,7 +348,7 @@ function NouvelEvenementForm() {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-base">Dates &amp; Lieu</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">Dates &amp; Salles</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -373,29 +374,42 @@ function NouvelEvenementForm() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="lieu">Lieu</Label>
-              <Input id="lieu" name="lieu" placeholder="Ville, salle, adresse..." />
+              <Label>Salle(s)</Label>
+              <div className="border border-gray-200 rounded-lg p-3 space-y-2">
+                {['Corbeille', 'Agents de change', 'Allée Rhône', 'Allée Saône', 'Lumière', 'Ampère', 'Tony Garnier', 'Jacquard', 'Coursives 1er étage'].map((salle) => (
+                  <label key={salle} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5">
+                    <input
+                      type="checkbox"
+                      checked={sallesSelectionnees.includes(salle)}
+                      onChange={(e) => setSallesSelectionnees((prev) =>
+                        e.target.checked ? [...prev, salle] : prev.filter((s) => s !== salle)
+                      )}
+                      className="rounded border-gray-300 text-[#C41230] focus:ring-[#C41230]"
+                    />
+                    <span className="text-sm text-gray-700">{salle}</span>
+                  </label>
+                ))}
+              </div>
+              {sallesSelectionnees.length > 0 && (
+                <p className="text-xs text-[#C41230]">Sélectionnées : {sallesSelectionnees.join(', ')}</p>
+              )}
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="heureDebut">Heure de début</Label>
-                <Input id="heureDebut" name="heureDebut" type="time" />
+                <Label htmlFor="heureDebutMontage">Début montage</Label>
+                <Input id="heureDebutMontage" name="heureDebutMontage" type="time" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="heureFin">Heure de fin</Label>
-                <Input id="heureFin" name="heureFin" type="time" />
+                <Label htmlFor="heureDebutEvenement">Début événement</Label>
+                <Input id="heureDebutEvenement" name="heureDebutEvenement" type="time" />
               </div>
               <div className="space-y-2">
-                <Label>Type d&apos;horaire</Label>
-                <Select value={typeHoraire} onValueChange={setTypeHoraire}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="STANDARD">Standard</SelectItem>
-                    <SelectItem value="NUIT">Nuit</SelectItem>
-                    <SelectItem value="FERIE">Jour férié</SelectItem>
-                    <SelectItem value="HEURES_SUP">Heures sup</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="heureFinEvenement">Fin événement</Label>
+                <Input id="heureFinEvenement" name="heureFinEvenement" type="time" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="heureFinDemontage">Fin démontage</Label>
+                <Input id="heureFinDemontage" name="heureFinDemontage" type="time" />
               </div>
             </div>
           </CardContent>

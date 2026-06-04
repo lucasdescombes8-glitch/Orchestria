@@ -95,11 +95,13 @@ model Evenement {
   statut             StatutEvenement @default(PROSPECTION)
   dateDebut          DateTime?
   dateFin            DateTime?
-  heureDebut         String?
-  heureFin           String?
-  typeHoraire        String?
+  heureDebutMontage  String?
+  heureDebutEvenement String?
+  heureFinEvenement  String?
+  heureFinDemontage  String?
   nombreParticipants Int?
   budgetIndicatif    Float?
+  salles             String?
   lieu               String?
   brief              String?
   notes              String?

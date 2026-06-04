@@ -72,11 +72,13 @@ export async function createEvenement(data: {
   statut?: string
   dateDebut?: string
   dateFin?: string
-  heureDebut?: string
-  heureFin?: string
-  typeHoraire?: string
+  heureDebutMontage?: string
+  heureDebutEvenement?: string
+  heureFinEvenement?: string
+  heureFinDemontage?: string
   nombreParticipants?: number
   budgetIndicatif?: number
+  salles?: string
   lieu?: string
   brief?: string
   notes?: string
@@ -108,11 +110,13 @@ export async function updateEvenement(id: string, data: {
   statut?: string
   dateDebut?: string | null
   dateFin?: string | null
-  heureDebut?: string
-  heureFin?: string
-  typeHoraire?: string
+  heureDebutMontage?: string
+  heureDebutEvenement?: string
+  heureFinEvenement?: string
+  heureFinDemontage?: string
   nombreParticipants?: number
   budgetIndicatif?: number
+  salles?: string
   lieu?: string
   brief?: string
   notes?: string

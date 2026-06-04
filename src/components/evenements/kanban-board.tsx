@@ -36,9 +36,11 @@ interface Evenement {
   type: string
   dateDebut?: Date | null
   dateFin?: Date | null
-  heureDebut?: string | null
-  heureFin?: string | null
-  typeHoraire?: string | null
+  heureDebutMontage?: string | null
+  heureDebutEvenement?: string | null
+  heureFinEvenement?: string | null
+  heureFinDemontage?: string | null
+  salles?: string | null
   lieu?: string | null
   nombreParticipants?: number | null
   budgetIndicatif?: number | null
@@ -70,9 +72,11 @@ function EditModal({ ev, onClose, onSaved }: {
     statut: ev.statut,
     dateDebut: toDateInput(ev.dateDebut),
     dateFin: toDateInput(ev.dateFin),
-    heureDebut: ev.heureDebut ?? '',
-    heureFin: ev.heureFin ?? '',
-    typeHoraire: ev.typeHoraire ?? 'STANDARD',
+    heureDebutMontage: ev.heureDebutMontage ?? '',
+    heureDebutEvenement: ev.heureDebutEvenement ?? '',
+    heureFinEvenement: ev.heureFinEvenement ?? '',
+    heureFinDemontage: ev.heureFinDemontage ?? '',
+    salles: ev.salles ?? '',
     lieu: ev.lieu ?? '',
     nombreParticipants: ev.nombreParticipants?.toString() ?? '',
     budgetIndicatif: ev.budgetIndicatif?.toString() ?? '',
@@ -94,9 +98,11 @@ function EditModal({ ev, onClose, onSaved }: {
         statut: form.statut,
         dateDebut: form.dateDebut || null,
         dateFin: form.dateFin || null,
-        heureDebut: form.heureDebut || undefined,
-        heureFin: form.heureFin || undefined,
-        typeHoraire: form.typeHoraire || undefined,
+        heureDebutMontage: form.heureDebutMontage || undefined,
+        heureDebutEvenement: form.heureDebutEvenement || undefined,
+        heureFinEvenement: form.heureFinEvenement || undefined,
+        heureFinDemontage: form.heureFinDemontage || undefined,
+        salles: form.salles || undefined,
         lieu: form.lieu || undefined,
         nombreParticipants: form.nombreParticipants ? Number(form.nombreParticipants) : undefined,
         budgetIndicatif: form.budgetIndicatif ? Number(form.budgetIndicatif) : undefined,
@@ -195,31 +201,46 @@ function EditModal({ ev, onClose, onSaved }: {
           </div>
 
           <div className="space-y-1">
-            <Label>Lieu</Label>
-            <Input value={form.lieu} onChange={(e) => set('lieu', e.target.value)} placeholder="Salle, adresse..." />
+            <Label>Salle(s)</Label>
+            <div className="border border-gray-200 rounded-lg p-3 grid grid-cols-2 gap-1.5">
+              {['Corbeille', 'Agents de change', 'Allée Rhône', 'Allée Saône', 'Lumière', 'Ampère', 'Tony Garnier', 'Jacquard', 'Coursives 1er étage'].map((salle) => {
+                const selected = form.salles.split(',').map((s) => s.trim()).filter(Boolean)
+                return (
+                  <label key={salle} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(salle)}
+                      onChange={(e) => {
+                        const next = e.target.checked
+                          ? [...selected, salle]
+                          : selected.filter((s) => s !== salle)
+                        set('salles', next.join(','))
+                      }}
+                      className="rounded border-gray-300"
+                    />
+                    <span className="text-xs text-gray-700">{salle}</span>
+                  </label>
+                )
+              })}
+            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label>Heure de début</Label>
-              <Input type="time" value={form.heureDebut} onChange={(e) => set('heureDebut', e.target.value)} />
+              <Label>Début montage</Label>
+              <Input type="time" value={form.heureDebutMontage} onChange={(e) => set('heureDebutMontage', e.target.value)} />
             </div>
             <div className="space-y-1">
-              <Label>Heure de fin</Label>
-              <Input type="time" value={form.heureFin} onChange={(e) => set('heureFin', e.target.value)} />
+              <Label>Début événement</Label>
+              <Input type="time" value={form.heureDebutEvenement} onChange={(e) => set('heureDebutEvenement', e.target.value)} />
             </div>
             <div className="space-y-1">
-              <Label>Type d&apos;horaire</Label>
-              <select
-                value={form.typeHoraire}
-                onChange={(e) => set('typeHoraire', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C41230]"
-              >
-                <option value="STANDARD">Standard</option>
-                <option value="NUIT">Nuit</option>
-                <option value="FERIE">Jour férié</option>
-                <option value="HEURES_SUP">Heures sup</option>
-              </select>
+              <Label>Fin événement</Label>
+              <Input type="time" value={form.heureFinEvenement} onChange={(e) => set('heureFinEvenement', e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label>Fin démontage</Label>
+              <Input type="time" value={form.heureFinDemontage} onChange={(e) => set('heureFinDemontage', e.target.value)} />
             </div>
           </div>
 
