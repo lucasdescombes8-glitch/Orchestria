@@ -46,20 +46,21 @@ export default async function ProfilPage() {
         </Card>
       </div>
 
-      {/* Mot de passe */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Lock className="h-5 w-5 text-[#C41230]" />
-          <h2 className="text-lg font-semibold text-gray-900">Mot de passe</h2>
+      {/* Mot de passe + gestion utilisateurs (admin uniquement) */}
+      {isAdmin && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Lock className="h-5 w-5 text-[#C41230]" />
+            <h2 className="text-lg font-semibold text-gray-900">Mot de passe</h2>
+          </div>
+          <Card>
+            <CardContent className="p-6">
+              <PasswordForm />
+            </CardContent>
+          </Card>
         </div>
-        <Card>
-          <CardContent className="p-6">
-            <PasswordForm />
-          </CardContent>
-        </Card>
-      </div>
+      )}
 
-      {/* Gestion des utilisateurs (admin uniquement) */}
       {isAdmin && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">

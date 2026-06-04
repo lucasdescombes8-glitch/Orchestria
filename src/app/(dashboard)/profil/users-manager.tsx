@@ -10,10 +10,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Plus, Pencil, X, Check, UserX, UserCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-const ROLES = ['ADMIN', 'DIRECTEUR', 'COMMERCIAL', 'CHEF_PROJET', 'COMPTABLE'] as const
+const ROLES = ['ADMIN', 'CHEF_PROJET'] as const
 const ROLE_LABELS: Record<string, string> = {
-  ADMIN: 'Admin', DIRECTEUR: 'Directeur', COMMERCIAL: 'Commercial',
-  CHEF_PROJET: 'Chef de projet', COMPTABLE: 'Comptable',
+  ADMIN: 'Admin',
+  CHEF_PROJET: 'Chef de projet',
 }
 
 interface User {
@@ -33,7 +33,7 @@ export function UsersManager({ users, currentUserId }: { users: User[]; currentU
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const [newUser, setNewUser] = useState({ prenom: '', nom: '', email: '', poste: '', role: 'COMMERCIAL', motDePasse: '' })
+  const [newUser, setNewUser] = useState({ prenom: '', nom: '', email: '', poste: '', role: 'CHEF_PROJET', motDePasse: '' })
   const [editData, setEditData] = useState<Partial<User & { motDePasse: string }>>({})
 
   async function handleCreate(e: React.FormEvent) {

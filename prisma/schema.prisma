@@ -33,7 +33,7 @@ model Utilisateur {
   prenom         String
   poste          String?
   motDePasseHash String
-  role           Role     @default(COMMERCIAL)
+  role           Role     @default(CHEF_PROJET)
   actif          Boolean  @default(true)
   createdAt      DateTime @default(now())
   organisation   Organisation @relation(fields: [organisationId], references: [id])
@@ -43,10 +43,7 @@ model Utilisateur {
 
 enum Role {
   ADMIN
-  DIRECTEUR
-  COMMERCIAL
   CHEF_PROJET
-  COMPTABLE
 }
 
 model Client {
