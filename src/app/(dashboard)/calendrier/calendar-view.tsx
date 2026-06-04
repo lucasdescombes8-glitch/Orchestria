@@ -128,7 +128,7 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
                 type="number"
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
-                className="w-16 border border-gray-200 rounded-lg px-2 py-1 text-sm text-center font-medium focus:outline-none focus:border-[#C41230]"
+                className="w-20 border border-gray-200 rounded-lg px-2 py-1 text-sm text-center font-medium focus:outline-none focus:border-[#C41230]"
               />
             </div>
             <button onClick={nextMonth} className="h-8 w-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
@@ -156,10 +156,10 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
 
           {/* Legend */}
           <div className="flex items-center gap-3 text-xs text-gray-500">
-            {Object.entries(STATUT_CONFIG).map(([key, cfg]) => (
+            {Object.entries(STATUT_CONFIG).filter(([key]) => key !== 'PROSPECTION').map(([key, cfg]) => (
               <span key={key} className="flex items-center gap-1">
                 <span className={cn('h-2 w-2 rounded-full', cfg.dot)} />
-                {key === 'PROSPECTION' ? 'Prospection' : key === 'OPTION' ? 'Option' : key === 'CONFIRME' ? 'Confirmé' : key === 'EN_COURS' ? 'En cours' : key === 'REALISE' ? 'Réalisé' : 'Annulé'}
+                {key === 'OPTION' ? 'Option' : key === 'CONFIRME' ? 'Confirmé' : key === 'EN_COURS' ? 'En cours' : key === 'REALISE' ? 'Réalisé' : 'Annulé'}
               </span>
             ))}
           </div>

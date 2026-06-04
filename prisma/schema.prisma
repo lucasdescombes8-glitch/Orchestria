@@ -83,15 +83,17 @@ model Contact {
   email     String?
   telephone String?
   mobile    String?
-  principal Boolean  @default(false)
-  createdAt DateTime @default(now())
-  client    Client   @relation(fields: [clientId], references: [id])
+  principal  Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  client     Client      @relation(fields: [clientId], references: [id])
+  evenements Evenement[]
 }
 
 model Evenement {
   id                 String          @id @default(cuid())
   organisationId     String
   clientId           String?
+  contactId          String?
   commercialId       String?
   nom                String
   type               TypeEvenement   @default(AUTRE)
@@ -114,6 +116,7 @@ model Evenement {
   updatedAt          DateTime        @updatedAt
   organisation       Organisation    @relation(fields: [organisationId], references: [id])
   client             Client?         @relation(fields: [clientId], references: [id])
+  contact            Contact?        @relation(fields: [contactId], references: [id])
   commercial         Utilisateur?    @relation(fields: [commercialId], references: [id])
   devis              Devis[]
   factures           Facture[]

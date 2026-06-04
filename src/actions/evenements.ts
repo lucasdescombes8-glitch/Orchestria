@@ -83,6 +83,7 @@ export async function createEvenement(data: {
   brief?: string
   notes?: string
   clientId?: string
+  contactId?: string
   commercialId?: string
   probabilite?: number
 }) {
@@ -120,7 +121,8 @@ export async function updateEvenement(id: string, data: {
   lieu?: string
   brief?: string
   notes?: string
-  clientId?: string
+  clientId?: string | null
+  contactId?: string | null
   commercialId?: string
   probabilite?: number
 }) {

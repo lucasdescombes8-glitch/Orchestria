@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateEvenementStatut, updateEvenement, getEvenements } from '@/actions/evenements'
+import { updateEvenementStatut, updateEvenement } from '@/actions/evenements'
+import { createClient, createContact } from '@/actions/clients'
 import { formatDate, formatCurrency } from '@/lib/utils'
-import { Calendar, MapPin, Users, X, Save, Loader2, ExternalLink } from 'lucide-react'
+import { Calendar, MapPin, Users, X, Save, Loader2, ExternalLink, Building2, UserPlus, ChevronDown, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -29,6 +30,11 @@ const TYPE_OPTIONS = [
   { value: 'AUTRE', label: 'Autre' },
 ]
 
+const SALLES = ['Corbeille', 'Agents de change', 'Allée Rhône', 'Allée Saône', 'Lumière', 'Ampère', 'Tony Garnier', 'Jacquard', 'Coursives 1er étage']
+
+interface Client { id: string; raisonSociale: string; contacts: Contact[] }
+interface Contact { id: string; prenom: string; nom: string; poste?: string | null }
+
 interface Evenement {
   id: string
   nom: string
@@ -48,10 +54,7 @@ interface Evenement {
   notes?: string | null
   probabilite?: number | null
   client?: { id?: string; raisonSociale: string } | null
-}
-
-interface KanbanBoardProps {
-  evenements: Evenement[]
+  contact?: { id?: string; prenom: string; nom: string } | null
 }
 
 function toDateInput(d?: Date | null): string {
@@ -66,6 +69,16 @@ function EditModal({ ev, onClose, onSaved }: {
   onSaved: (updated: Partial<Evenement>) => void
 }) {
   const [saving, setSaving] = useState(false)
+  const [clients, setClients] = useState<Client[]>([])
+  const [clientId, setClientId] = useState(ev.client?.id ?? '')
+  const [contactId, setContactId] = useState(ev.contact?.id ?? '')
+  const [showNewClient, setShowNewClient] = useState(false)
+  const [showNewContact, setShowNewContact] = useState(false)
+  const [newClientName, setNewClientName] = useState('')
+  const [newContact, setNewContact] = useState({ prenom: '', nom: '', poste: '' })
+  const [creatingClient, setCreatingClient] = useState(false)
+  const [creatingContact, setCreatingContact] = useState(false)
+
   const [form, setForm] = useState({
     nom: ev.nom,
     type: ev.type,
@@ -77,7 +90,6 @@ function EditModal({ ev, onClose, onSaved }: {
     heureFinEvenement: ev.heureFinEvenement ?? '',
     heureFinDemontage: ev.heureFinDemontage ?? '',
     salles: ev.salles ?? '',
-    lieu: ev.lieu ?? '',
     nombreParticipants: ev.nombreParticipants?.toString() ?? '',
     budgetIndicatif: ev.budgetIndicatif?.toString() ?? '',
     brief: ev.brief ?? '',
@@ -87,6 +99,54 @@ function EditModal({ ev, onClose, onSaved }: {
 
   function set(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  // Fetch clients list
+  useEffect(() => {
+    fetch('/api/clients-list')
+      .then((r) => r.json())
+      .then((data) => setClients(data.clients ?? []))
+      .catch(() => {})
+  }, [])
+
+  const selectedClient = clients.find((c) => c.id === clientId)
+  const availableContacts = selectedClient?.contacts ?? []
+
+  async function handleCreateClient() {
+    if (!newClientName.trim()) return
+    setCreatingClient(true)
+    try {
+      const c = await createClient({ raisonSociale: newClientName.trim() })
+      setClients((prev) => [...prev, { ...c, contacts: [] }])
+      setClientId(c.id)
+      setContactId('')
+      setShowNewClient(false)
+      setNewClientName('')
+    } finally {
+      setCreatingClient(false)
+    }
+  }
+
+  async function handleCreateContact() {
+    if (!clientId || !newContact.nom.trim()) return
+    setCreatingContact(true)
+    try {
+      const c = await createContact(clientId, {
+        prenom: newContact.prenom,
+        nom: newContact.nom,
+        poste: newContact.poste || undefined,
+      })
+      setClients((prev) => prev.map((cl) =>
+        cl.id === clientId
+          ? { ...cl, contacts: [...cl.contacts, { id: c.id, prenom: c.prenom, nom: c.nom, poste: c.poste }] }
+          : cl
+      ))
+      setContactId(c.id)
+      setShowNewContact(false)
+      setNewContact({ prenom: '', nom: '', poste: '' })
+    } finally {
+      setCreatingContact(false)
+    }
   }
 
   async function handleSave() {
@@ -103,12 +163,13 @@ function EditModal({ ev, onClose, onSaved }: {
         heureFinEvenement: form.heureFinEvenement || undefined,
         heureFinDemontage: form.heureFinDemontage || undefined,
         salles: form.salles || undefined,
-        lieu: form.lieu || undefined,
         nombreParticipants: form.nombreParticipants ? Number(form.nombreParticipants) : undefined,
         budgetIndicatif: form.budgetIndicatif ? Number(form.budgetIndicatif) : undefined,
         brief: form.brief || undefined,
         notes: form.notes || undefined,
         probabilite: form.probabilite ? Number(form.probabilite) : undefined,
+        clientId: clientId || null,
+        contactId: contactId || null,
       })
       onSaved({
         nom: form.nom,
@@ -116,9 +177,9 @@ function EditModal({ ev, onClose, onSaved }: {
         type: form.type,
         dateDebut: form.dateDebut ? new Date(form.dateDebut) : null,
         dateFin: form.dateFin ? new Date(form.dateFin) : null,
-        lieu: form.lieu || null,
         nombreParticipants: form.nombreParticipants ? Number(form.nombreParticipants) : null,
         budgetIndicatif: form.budgetIndicatif ? Number(form.budgetIndicatif) : null,
+        client: clientId ? (selectedClient ? { id: selectedClient.id, raisonSociale: selectedClient.raisonSociale } : null) : null,
       })
       onClose()
     } finally {
@@ -126,7 +187,6 @@ function EditModal({ ev, onClose, onSaved }: {
     }
   }
 
-  // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handler)
@@ -143,10 +203,7 @@ function EditModal({ ev, onClose, onSaved }: {
         <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white z-10">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-900">Modifier le projet</h2>
-            <Link
-              href={`/evenements/${ev.id}`}
-              className="flex items-center gap-1 text-xs text-[#C41230] hover:underline"
-            >
+            <Link href={`/evenements/${ev.id}`} className="flex items-center gap-1 text-xs text-[#C41230] hover:underline">
               <ExternalLink className="h-3 w-3" /> Fiche complète
             </Link>
           </div>
@@ -162,29 +219,90 @@ function EditModal({ ev, onClose, onSaved }: {
             <Input value={form.nom} onChange={(e) => set('nom', e.target.value)} />
           </div>
 
+          {/* Entreprise */}
+          <div className="space-y-1">
+            <Label className="flex items-center gap-1.5"><Building2 className="h-3.5 w-3.5 text-[#C41230]" />Entreprise</Label>
+            {showNewClient ? (
+              <div className="flex gap-2">
+                <Input
+                  autoFocus
+                  value={newClientName}
+                  onChange={(e) => setNewClientName(e.target.value)}
+                  placeholder="Raison sociale..."
+                  onKeyDown={(e) => e.key === 'Enter' && handleCreateClient()}
+                />
+                <Button size="sm" onClick={handleCreateClient} disabled={creatingClient || !newClientName.trim()}>
+                  {creatingClient ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setShowNewClient(false)}><X className="h-4 w-4" /></Button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <select
+                  value={clientId}
+                  onChange={(e) => { setClientId(e.target.value); setContactId('') }}
+                  className="flex-1 border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#C41230]"
+                >
+                  <option value="">— Aucune entreprise —</option>
+                  {clients.map((c) => <option key={c.id} value={c.id}>{c.raisonSociale}</option>)}
+                </select>
+                <Button size="sm" variant="outline" onClick={() => setShowNewClient(true)} title="Nouvelle entreprise">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Contact */}
+          {clientId && (
+            <div className="space-y-1">
+              <Label className="flex items-center gap-1.5"><UserPlus className="h-3.5 w-3.5 text-[#C41230]" />Contact</Label>
+              {showNewContact ? (
+                <div className="space-y-2 border border-gray-200 rounded-xl p-3 bg-gray-50">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input autoFocus placeholder="Prénom" value={newContact.prenom} onChange={(e) => setNewContact((c) => ({ ...c, prenom: e.target.value }))} />
+                    <Input placeholder="Nom *" value={newContact.nom} onChange={(e) => setNewContact((c) => ({ ...c, nom: e.target.value }))} />
+                  </div>
+                  <Input placeholder="Poste" value={newContact.poste} onChange={(e) => setNewContact((c) => ({ ...c, poste: e.target.value }))} />
+                  <div className="flex gap-2 justify-end">
+                    <Button size="sm" variant="ghost" onClick={() => setShowNewContact(false)}><X className="h-4 w-4 mr-1" />Annuler</Button>
+                    <Button size="sm" onClick={handleCreateContact} disabled={creatingContact || !newContact.nom.trim()}>
+                      {creatingContact ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Plus className="h-4 w-4 mr-1" />}
+                      Créer
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <select
+                    value={contactId}
+                    onChange={(e) => setContactId(e.target.value)}
+                    className="flex-1 border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#C41230]"
+                  >
+                    <option value="">— Aucun contact —</option>
+                    {availableContacts.map((c) => (
+                      <option key={c.id} value={c.id}>{c.prenom} {c.nom}{c.poste ? ` (${c.poste})` : ''}</option>
+                    ))}
+                  </select>
+                  <Button size="sm" variant="outline" onClick={() => setShowNewContact(true)} title="Nouveau contact">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <Label>Statut</Label>
-              <select
-                value={form.statut}
-                onChange={(e) => set('statut', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C41230]"
-              >
-                {STATUTS.map((s) => (
-                  <option key={s.key} value={s.key}>{s.label}</option>
-                ))}
+              <select value={form.statut} onChange={(e) => set('statut', e.target.value)} className="w-full border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#C41230]">
+                {STATUTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
               </select>
             </div>
             <div className="space-y-1">
               <Label>Type</Label>
-              <select
-                value={form.type}
-                onChange={(e) => set('type', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C41230]"
-              >
-                {TYPE_OPTIONS.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
+              <select value={form.type} onChange={(e) => set('type', e.target.value)} className="w-full border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#C41230]">
+                {TYPE_OPTIONS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
             </div>
           </div>
@@ -202,21 +320,19 @@ function EditModal({ ev, onClose, onSaved }: {
 
           <div className="space-y-1">
             <Label>Salle(s)</Label>
-            <div className="border border-gray-200 rounded-lg p-3 grid grid-cols-2 gap-1.5">
-              {['Corbeille', 'Agents de change', 'Allée Rhône', 'Allée Saône', 'Lumière', 'Ampère', 'Tony Garnier', 'Jacquard', 'Coursives 1er étage'].map((salle) => {
+            <div className="border border-gray-200 rounded-xl p-3 grid grid-cols-2 gap-1.5">
+              {SALLES.map((salle) => {
                 const selected = form.salles.split(',').map((s) => s.trim()).filter(Boolean)
                 return (
-                  <label key={salle} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5">
+                  <label key={salle} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-lg px-2 py-1">
                     <input
                       type="checkbox"
                       checked={selected.includes(salle)}
                       onChange={(e) => {
-                        const next = e.target.checked
-                          ? [...selected, salle]
-                          : selected.filter((s) => s !== salle)
+                        const next = e.target.checked ? [...selected, salle] : selected.filter((s) => s !== salle)
                         set('salles', next.join(','))
                       }}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 accent-[#C41230]"
                     />
                     <span className="text-xs text-gray-700">{salle}</span>
                   </label>
@@ -226,44 +342,22 @@ function EditModal({ ev, onClose, onSaved }: {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label>Début montage</Label>
-              <Input type="time" value={form.heureDebutMontage} onChange={(e) => set('heureDebutMontage', e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <Label>Début événement</Label>
-              <Input type="time" value={form.heureDebutEvenement} onChange={(e) => set('heureDebutEvenement', e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <Label>Fin événement</Label>
-              <Input type="time" value={form.heureFinEvenement} onChange={(e) => set('heureFinEvenement', e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <Label>Fin démontage</Label>
-              <Input type="time" value={form.heureFinDemontage} onChange={(e) => set('heureFinDemontage', e.target.value)} />
-            </div>
+            <div className="space-y-1"><Label>Début montage</Label><Input type="time" value={form.heureDebutMontage} onChange={(e) => set('heureDebutMontage', e.target.value)} /></div>
+            <div className="space-y-1"><Label>Début événement</Label><Input type="time" value={form.heureDebutEvenement} onChange={(e) => set('heureDebutEvenement', e.target.value)} /></div>
+            <div className="space-y-1"><Label>Fin événement</Label><Input type="time" value={form.heureFinEvenement} onChange={(e) => set('heureFinEvenement', e.target.value)} /></div>
+            <div className="space-y-1"><Label>Fin démontage</Label><Input type="time" value={form.heureFinDemontage} onChange={(e) => set('heureFinDemontage', e.target.value)} /></div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <Label>Participants</Label>
-              <Input type="number" value={form.nombreParticipants} onChange={(e) => set('nombreParticipants', e.target.value)} placeholder="0" />
-            </div>
-            <div className="space-y-1">
-              <Label>Budget (€)</Label>
-              <Input type="number" value={form.budgetIndicatif} onChange={(e) => set('budgetIndicatif', e.target.value)} placeholder="0" />
-            </div>
-            <div className="space-y-1">
-              <Label>Probabilité (%)</Label>
-              <Input type="number" min="0" max="100" value={form.probabilite} onChange={(e) => set('probabilite', e.target.value)} />
-            </div>
+            <div className="space-y-1"><Label>Participants</Label><Input type="number" value={form.nombreParticipants} onChange={(e) => set('nombreParticipants', e.target.value)} placeholder="0" /></div>
+            <div className="space-y-1"><Label>Budget (€)</Label><Input type="number" value={form.budgetIndicatif} onChange={(e) => set('budgetIndicatif', e.target.value)} placeholder="0" /></div>
+            <div className="space-y-1"><Label>Probabilité (%)</Label><Input type="number" min="0" max="100" value={form.probabilite} onChange={(e) => set('probabilite', e.target.value)} /></div>
           </div>
 
           <div className="space-y-1">
             <Label>Brief</Label>
             <Textarea value={form.brief} onChange={(e) => set('brief', e.target.value)} rows={2} placeholder="Description du projet..." />
           </div>
-
           <div className="space-y-1">
             <Label>Notes internes</Label>
             <Textarea value={form.notes} onChange={(e) => set('notes', e.target.value)} rows={2} placeholder="Notes..." />
@@ -283,7 +377,7 @@ function EditModal({ ev, onClose, onSaved }: {
   )
 }
 
-export function KanbanBoard({ evenements }: KanbanBoardProps) {
+export function KanbanBoard({ evenements }: { evenements: Evenement[] }) {
   const router = useRouter()
   const [dragging, setDragging] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState<string | null>(null)
@@ -303,22 +397,15 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
     setDragOver(statut)
   }
 
-  function handleDragLeave() {
-    setDragOver(null)
-  }
+  function handleDragLeave() { setDragOver(null) }
 
   async function handleDrop(e: React.DragEvent, statut: string) {
     e.preventDefault()
     setDragOver(null)
     if (!dragging) return
-
     const item = items.find((i) => i.id === dragging)
     if (!item || item.statut === statut) return
-
-    setItems((prev) =>
-      prev.map((i) => (i.id === dragging ? { ...i, statut } : i))
-    )
-
+    setItems((prev) => prev.map((i) => (i.id === dragging ? { ...i, statut } : i)))
     try {
       await updateEvenementStatut(dragging, statut)
       router.refresh()
@@ -329,9 +416,7 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
   }
 
   function handleSaved(id: string, updated: Partial<Evenement>) {
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, ...updated } : i))
-    )
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...updated } : i)))
     router.refresh()
   }
 
@@ -359,12 +444,9 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
               <div className="p-3 border-b border-current/10">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-sm text-gray-700">{label}</span>
-                  <span className="text-xs bg-white rounded-full px-2 py-0.5 font-medium text-gray-500">
-                    {colItems.length}
-                  </span>
+                  <span className="text-xs bg-white rounded-full px-2 py-0.5 font-medium text-gray-500">{colItems.length}</span>
                 </div>
               </div>
-
               <div className="p-2 space-y-2 min-h-[200px]">
                 {colItems.map((ev) => (
                   <div
@@ -374,36 +456,22 @@ export function KanbanBoard({ evenements }: KanbanBoardProps) {
                     onClick={() => setEditingId(ev.id)}
                     className={`bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md hover:border-[#C41230]/30 transition-all ${dragging === ev.id ? 'opacity-50' : ''}`}
                   >
-                    <p className="font-medium text-sm text-gray-900 mb-1 hover:text-[#C41230] transition-colors">
-                      {ev.nom}
-                    </p>
-                    {ev.client && (
-                      <p className="text-xs text-gray-500 mb-2">{ev.client.raisonSociale}</p>
-                    )}
+                    <p className="font-medium text-sm text-gray-900 mb-1 hover:text-[#C41230] transition-colors">{ev.nom}</p>
+                    {ev.client && <p className="text-xs text-gray-500 mb-2">{ev.client.raisonSociale}</p>}
                     <div className="space-y-1">
                       {ev.dateDebut && (
                         <div className="flex items-center gap-1 text-xs text-gray-400">
-                          <Calendar className="h-3 w-3" />
-                          {formatDate(ev.dateDebut)}
-                        </div>
-                      )}
-                      {ev.lieu && (
-                        <div className="flex items-center gap-1 text-xs text-gray-400 truncate">
-                          <MapPin className="h-3 w-3 shrink-0" />
-                          <span className="truncate">{ev.lieu}</span>
+                          <Calendar className="h-3 w-3" />{formatDate(ev.dateDebut)}
                         </div>
                       )}
                       {ev.nombreParticipants && (
                         <div className="flex items-center gap-1 text-xs text-gray-400">
-                          <Users className="h-3 w-3" />
-                          {ev.nombreParticipants} pers.
+                          <Users className="h-3 w-3" />{ev.nombreParticipants} pers.
                         </div>
                       )}
                     </div>
                     {ev.budgetIndicatif && (
-                      <div className="mt-2 text-xs font-medium text-[#C41230]">
-                        {formatCurrency(ev.budgetIndicatif)}
-                      </div>
+                      <div className="mt-2 text-xs font-medium text-[#C41230]">{formatCurrency(ev.budgetIndicatif)}</div>
                     )}
                   </div>
                 ))}
