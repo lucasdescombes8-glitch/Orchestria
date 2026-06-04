@@ -306,33 +306,36 @@ export function CalendarView({ evenements }: CalendarViewProps) {
               const rowBg = weekend ? 'bg-gray-200' : 'bg-white'
               const label = dayLabel(day)
 
+              // Flatten rows but track category boundaries for rowSpan
               return rows.map((row, rowIdx) => (
                 <tr key={`${day.toISOString()}-${rowIdx}`} className={rowBg}>
-                  {/* Day label cell — only show for first resource row */}
+                  {/* Day label — show once per day spanning all room rows */}
                   {rowIdx === 0 && (
                     <td
                       rowSpan={rows.length}
                       className={cn(
-                        'border border-slate-300 px-1 py-0.5 font-medium text-slate-700 whitespace-nowrap align-top',
+                        'border border-slate-300 px-2 py-1 font-semibold text-slate-700 whitespace-nowrap align-middle text-xs',
                         rowBg
                       )}
+                      style={{ minWidth: 64 }}
                     >
                       {label}
                     </td>
                   )}
 
-                  {/* Category label — only show for first room of category */}
+                  {/* Category label — show once per category group, spanning its rooms */}
                   {row.showCategory && (
                     <td
                       rowSpan={row.categoryRowspan}
-                      className="border border-slate-300 px-1 py-0.5 bg-slate-50 font-medium text-slate-600 align-top whitespace-nowrap"
+                      className="border border-slate-300 px-2 py-1 bg-slate-50 font-semibold text-slate-700 align-middle whitespace-nowrap text-xs"
+                      style={{ minWidth: 90 }}
                     >
                       {row.categoryName}
                     </td>
                   )}
 
                   {/* Room name */}
-                  <td className="border border-slate-300 px-1 py-0.5 text-slate-600 whitespace-nowrap">
+                  <td className="border border-slate-300 px-2 py-1 text-slate-600 whitespace-nowrap text-xs" style={{ minWidth: 130 }}>
                     {row.roomName}
                   </td>
 
