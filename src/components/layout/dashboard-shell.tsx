@@ -17,30 +17,30 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+    <div className="flex h-screen" style={{ background: 'var(--background)' }}>
+      {/* Desktop sidebar */}
+      <div className="hidden lg:flex lg:w-60 lg:flex-col lg:fixed lg:inset-y-0 z-40">
         <Sidebar />
       </div>
 
+      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="relative w-64 h-full">
+          <div className="relative w-60 h-full shadow-2xl">
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
         </div>
       )}
 
-      <div className="flex flex-col flex-1 lg:pl-64 min-h-screen">
-        <Header
-          user={user}
-          onMenuClick={() => setSidebarOpen(true)}
-        />
+      {/* Main content */}
+      <div className="flex flex-col flex-1 lg:pl-60 min-h-screen">
+        <Header user={user} onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 overflow-auto">
-          <div className="p-4 lg:p-6">
+          <div className="p-5 lg:p-7 max-w-[1400px] mx-auto">
             {children}
           </div>
         </main>

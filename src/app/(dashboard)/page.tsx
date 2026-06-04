@@ -131,12 +131,12 @@ export default async function DashboardPage() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <KpiCard title="CA du mois" value={formatCurrency(caMois)} icon={Euro} color="indigo"
+          <KpiCard title="CA du mois" value={formatCurrency(caMois)} icon={Euro} color="red"
             trend={caLastMois > 0 ? { value: `${Math.abs(Math.round(((caMois - caLastMois) / caLastMois) * 100))}% vs mois dernier`, positive: caMois >= caLastMois } : undefined}
           />
           <KpiCard title="Projets actifs" value={String(evenementsActifs)} icon={Calendar} color="green" />
-          <KpiCard title="Devis en attente" value={String(devisEnAttente)} icon={FileText} color="yellow" />
-          <KpiCard title="Taux de conversion" value={`${tauxConversion}%`} subtitle={`${devisAcceptes} / ${totalDevis} devis`} icon={TrendingUp} color="indigo" />
+          <KpiCard title="Devis en attente" value={String(devisEnAttente)} icon={FileText} color="amber" />
+          <KpiCard title="Taux de conversion" value={`${tauxConversion}%`} subtitle={`${devisAcceptes} / ${totalDevis} devis`} icon={TrendingUp} color="blue" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

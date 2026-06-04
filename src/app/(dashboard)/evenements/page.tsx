@@ -72,7 +72,7 @@ export default async function EvenementsPage({ searchParams }: Props) {
       {view === 'kanban' ? (
         <KanbanBoard evenements={evenements} />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>

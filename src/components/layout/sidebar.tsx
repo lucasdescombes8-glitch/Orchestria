@@ -38,24 +38,29 @@ export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname()
 
   return (
-    <div className="flex h-full flex-col bg-slate-900 text-white">
+    <div className="flex h-full flex-col" style={{ background: 'var(--sidebar-bg)' }}>
       {/* Logo */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-700">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-[#C41230] flex items-center justify-center">
-            <span className="text-white font-bold text-sm">O</span>
+      <div className="px-5 py-5 border-b" style={{ borderColor: 'var(--sidebar-border)' }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-[#C41230] flex items-center justify-center shadow-lg shadow-red-900/40">
+              <span className="text-white font-bold text-base tracking-tight">O</span>
+            </div>
+            <div>
+              <span className="font-bold text-white text-base tracking-tight">Orchestria</span>
+              <span className="text-[#C41230] font-bold text-base"> /</span>
+            </div>
           </div>
-          <span className="font-semibold text-lg">Orchestria <span className="text-[#C41230]">/</span></span>
+          {onClose && (
+            <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white transition-colors">
+              <X className="h-5 w-5" />
+            </button>
+          )}
         </div>
-        {onClose && (
-          <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white">
-            <X className="h-5 w-5" />
-          </button>
-        )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = item.href === '/'
@@ -68,13 +73,13 @@ export function Sidebar({ onClose }: SidebarProps) {
               href={item.href}
               onClick={onClose}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                'group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 isActive
-                  ? 'bg-[#C41230] text-white'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-[#C41230] text-white shadow-md shadow-red-900/30'
+                  : 'text-slate-400 hover:bg-white/[0.06] hover:text-white'
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon className={cn('h-4 w-4 shrink-0 transition-transform duration-150', isActive ? '' : 'group-hover:scale-110')} />
               {item.label}
             </Link>
           )
@@ -82,8 +87,8 @@ export function Sidebar({ onClose }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-slate-700">
-        <p className="text-xs text-slate-500 text-center">Orchestria v1.0</p>
+      <div className="px-4 py-4 border-t" style={{ borderColor: 'var(--sidebar-border)' }}>
+        <p className="text-xs text-slate-600 text-center font-medium tracking-wide">PALAIS DE LA BOURSE · LYON</p>
       </div>
     </div>
   )

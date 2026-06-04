@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F8F9FC;
+  --foreground: #0F1117;
   --brand: #C41230;
   --brand-dark: #9B0E25;
-  --brand-light: #F5E6E9;
+  --brand-light: #FDF2F4;
+  --sidebar-bg: #0F1117;
+  --sidebar-border: rgba(255,255,255,0.06);
 }
 
 @theme inline {
@@ -15,24 +17,26 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Print styles for devis and factures */
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* Print styles */
 @media print {
-  .print\:hidden {
-    display: none !important;
-  }
-
-  nav, header, aside {
-    display: none !important;
-  }
-
-  body {
-    padding: 0;
-    margin: 0;
-  }
+  .print\:hidden { display: none !important; }
+  nav, header, aside { display: none !important; }
+  body { padding: 0; margin: 0; background: white; }
 }
