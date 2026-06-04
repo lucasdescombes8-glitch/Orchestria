@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && node -e \"if(process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres')){require('child_process').execSync('npx prisma db push --accept-data-loss',{stdio:'inherit'})}\" && next build",
+    "build": "npx prisma generate && node -e \"if(process.env.DATABASE_URL&&process.env.DATABASE_URL.startsWith('postgres')){const {PrismaClient}=require('@prisma/client');const p=new PrismaClient();p.$executeRawUnsafe('UPDATE \\\"Evenement\\\" SET statut=\\'OPTION\\' WHERE statut::text IN (\\'PROSPECTION\\',\\'EN_COURS\\',\\'REALISE\\')').catch(()=>{}).finally(()=>{p.$disconnect();require('child_process').execSync('npx prisma db push --accept-data-loss',{stdio:'inherit'})})}\" && next build",
     "start": "next start",
     "lint": "eslint",
     "seed": "ts-node --project tsconfig.seed.json prisma/seed.ts"
