@@ -38,6 +38,7 @@ function NouvelEvenementForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const prefilledClientId = searchParams.get('clientId')
+  const prefilledDate = searchParams.get('date') ?? ''
   const [loading, setLoading] = useState(false)
   const [clients, setClients] = useState<Array<{ id: string; raisonSociale: string }>>([])
   const [type, setType] = useState('AUTRE')
@@ -45,8 +46,8 @@ function NouvelEvenementForm() {
   const [clientId, setClientId] = useState(prefilledClientId || '')
   const [sallesSelectionnees, setSallesSelectionnees] = useState<string[]>([])
   const [conflits, setConflits] = useState<Array<{ id: string; nom: string; statut: string; dateDebut: string | null; lieu: string | null }>>([])
-  const [dateDebutValue, setDateDebutValue] = useState('')
-  const [dateFinValue, setDateFinValue] = useState('')
+  const [dateDebutValue, setDateDebutValue] = useState(prefilledDate)
+  const [dateFinValue, setDateFinValue] = useState(prefilledDate)
 
   // Inline client creation
   const [showNewClient, setShowNewClient] = useState(false)
