@@ -43,7 +43,7 @@ export default async function ClientDetailPage({ params }: Props) {
               <h1 className="text-2xl font-bold text-gray-900">{client.raisonSociale}</h1>
               <p className="text-sm text-gray-500">
                 {client.secteur && <Badge variant="secondary" className="mr-2">{client.secteur}</Badge>}
-                Client depuis {formatDate(client.createdAt)}
+                Entreprise depuis {formatDate(client.createdAt)}
               </p>
             </div>
           </div>

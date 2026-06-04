@@ -128,7 +128,7 @@ export default function DevisDetailPage() {
               <StatutDevisBadge statut={devis.statut} />
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              {devis.evenement?.client?.raisonSociale ?? 'Sans client'}
+              {devis.evenement?.client?.raisonSociale ?? 'Sans entreprise'}
               {devis.evenement && ` · ${devis.evenement.nom}`}
             </p>
           </div>

@@ -21,12 +21,12 @@ export default async function ClientsPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Clients<span className="text-[#C41230]"> /</span></h1>
-          <p className="text-sm text-gray-500 mt-1">{clients.length} client(s)</p>
+          <p className="text-sm text-gray-500 mt-1">{clients.length} entreprise(s)</p>
         </div>
         <Link href="/clients/nouveau">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Nouveau client
+            Nouvelle entreprise
           </Button>
         </Link>
       </div>
@@ -37,7 +37,7 @@ export default async function ClientsPage({
         <form>
           <Input
             name="search"
-            placeholder="Rechercher un client..."
+            placeholder="Rechercher une entreprise..."
             defaultValue={params.search}
             className="pl-9"
           />
@@ -62,7 +62,7 @@ export default async function ClientsPage({
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-12 text-gray-400">
                   <Building2 className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                  <p>Aucun client trouvé</p>
+                  <p>aucune entreprise trouvé</p>
                 </TableCell>
               </TableRow>
             ) : (

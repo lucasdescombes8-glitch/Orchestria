@@ -181,7 +181,7 @@ export default async function DashboardPage() {
                   <div className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 truncate">{ev.nom}</p>
-                      <p className="text-xs text-gray-400">{ev.client?.raisonSociale ?? 'Sans client'} · {formatDate(ev.dateDebut)}</p>
+                      <p className="text-xs text-gray-400">{ev.client?.raisonSociale ?? 'Sans entreprise'} · {formatDate(ev.dateDebut)}</p>
                     </div>
                     <StatutEvenementBadge statut={ev.statut} />
                   </div>

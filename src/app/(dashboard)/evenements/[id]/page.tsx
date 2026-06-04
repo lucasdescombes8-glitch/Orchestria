@@ -155,7 +155,7 @@ export default async function EvenementDetailPage({ params }: Props) {
                   <p className="text-gray-500">{typeLabels[ev.type] ?? ev.type}</p>
                 </div>
                 <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-xs font-medium text-gray-500 mb-1">Client</p>
+                  <p className="text-xs font-medium text-gray-500 mb-1">Entreprise</p>
                   <p className="font-semibold">{ev.client?.raisonSociale ?? '—'}</p>
                 </div>
                 <div className="p-3 bg-gray-50 rounded-lg">

@@ -57,7 +57,7 @@ export default async function DevisPage({ searchParams }: Props) {
           <TableHeader>
             <TableRow>
               <TableHead>Numéro</TableHead>
-              <TableHead>Client / Événement</TableHead>
+              <TableHead>Entreprise / Événement</TableHead>
               <TableHead>Objet</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Validité</TableHead>

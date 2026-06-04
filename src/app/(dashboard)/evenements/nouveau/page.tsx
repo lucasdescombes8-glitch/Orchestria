@@ -181,7 +181,7 @@ function NouvelEvenementForm() {
             {/* Client selector + inline creation */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label>Client</Label>
+                <Label>Entreprise</Label>
                 {!showNewClient && (
                   <button
                     type="button"
@@ -196,7 +196,7 @@ function NouvelEvenementForm() {
               {showNewClient ? (
                 <div className="border border-[#C41230]/30 rounded-xl p-4 space-y-3 bg-red-50/30">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-gray-800">Créer un nouveau client</p>
+                    <p className="text-sm font-medium text-gray-800">Créer une nouvelle entreprise</p>
                     <button type="button" onClick={() => setShowNewClient(false)} className="text-gray-400 hover:text-gray-600">
                       <X className="h-4 w-4" />
                     </button>
@@ -243,14 +243,14 @@ function NouvelEvenementForm() {
                     disabled={creatingClient || !newClient.raisonSociale.trim()}
                   >
                     {creatingClient ? <Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> : <Plus className="h-3 w-3 mr-1.5" />}
-                    Créer le client
+                    Créer l'entreprise
                   </Button>
                 </div>
               ) : (
                 <Select value={clientId} onValueChange={setClientId}>
-                  <SelectTrigger><SelectValue placeholder="Sélectionner un client" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Sélectionner une entreprise" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_none">Sans client</SelectItem>
+                    <SelectItem value="_none">Sans entreprise</SelectItem>
                     {clients.map((c) => (
                       <SelectItem key={c.id} value={c.id}>{c.raisonSociale}</SelectItem>
                     ))}
@@ -276,7 +276,7 @@ function NouvelEvenementForm() {
                 </div>
                 {!showNewContact && (
                   <p className="text-xs text-gray-400 italic">
-                    Client : {selectedClient?.raisonSociale} — cliquez &quot;Ajouter un contact&quot; pour créer un interlocuteur.
+                    Entreprise : {selectedClient?.raisonSociale} — cliquez &quot;Ajouter un contact&quot; pour créer un interlocuteur.
                   </p>
                 )}
 

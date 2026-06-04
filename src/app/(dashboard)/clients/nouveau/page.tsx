@@ -122,7 +122,7 @@ export default function NouveauClientPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Nouveau client <span className="text-[#C41230]">/</span>
+            Nouvelle entreprise <span className="text-[#C41230]">/</span>
           </h1>
         </div>
       </div>
