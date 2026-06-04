@@ -97,6 +97,11 @@ export default function LoginPage() {
               >
                 {loading ? 'Connexion...' : 'Se connecter'}
               </Button>
+              <div className="text-center">
+                <a href="/forgot-password" className="text-sm text-gray-500 hover:text-[#C41230] transition-colors">
+                  Mot de passe oublié ?
+                </a>
+              </div>
             </form>
           </CardContent>
         </Card>

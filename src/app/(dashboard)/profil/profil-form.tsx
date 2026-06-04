@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { updateProfil } from '@/actions/profil'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,6 +19,8 @@ interface User {
 }
 
 export function ProfilForm({ user }: { user: User }) {
+  const { update } = useSession()
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
@@ -27,13 +31,13 @@ export function ProfilForm({ user }: { user: User }) {
     setError('')
     setSaved(false)
     const fd = new FormData(e.currentTarget)
+    const prenom = fd.get('prenom') as string
+    const nom = fd.get('nom') as string
+    const email = fd.get('email') as string
     try {
-      await updateProfil({
-        prenom: fd.get('prenom') as string,
-        nom: fd.get('nom') as string,
-        email: fd.get('email') as string,
-        poste: fd.get('poste') as string || undefined,
-      })
+      await updateProfil({ prenom, nom, email, poste: fd.get('poste') as string || undefined })
+      await update({ name: `${prenom} ${nom}`, email })
+      router.refresh()
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err: any) {

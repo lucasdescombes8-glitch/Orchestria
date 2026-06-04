@@ -135,7 +135,7 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
   return (
     <div className="flex flex-col gap-4">
       {/* ── Navigation ── */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+      <div className="sticky top-0 z-30 bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           {/* Year + prev/next */}
           <div className="flex items-center gap-2">

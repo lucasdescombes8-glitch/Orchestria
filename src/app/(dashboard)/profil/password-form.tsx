@@ -62,7 +62,10 @@ export function PasswordForm() {
         </div>
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <a href="/forgot-password" className="text-sm text-gray-400 hover:text-[#C41230] transition-colors">
+          Mot de passe oublié ?
+        </a>
         <Button type="submit" disabled={loading}>
           {saved ? <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" /> : <Lock className="h-4 w-4 mr-2" />}
           {saved ? 'Modifié !' : loading ? 'Modification...' : 'Changer le mot de passe'}

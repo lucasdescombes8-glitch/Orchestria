@@ -304,6 +304,15 @@ model Prestataire {
   organisation   Organisation @relation(fields: [organisationId], references: [id])
 }
 
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
 model TypePrestataire {
   id             String   @id @default(cuid())
   organisationId String
