@@ -1,25 +1,21 @@
 import { Badge } from '@/components/ui/badge'
 
-type StatutEvenement = 'PROSPECTION' | 'OPTION' | 'CONFIRME' | 'EN_COURS' | 'REALISE'
+type StatutEvenement = 'OPTION' | 'CONFIRME' | 'ANNULE'
 type StatutDevis = 'BROUILLON' | 'ENVOYE' | 'VU' | 'ACCEPTE' | 'REFUSE' | 'EXPIRE'
 type StatutFacture = 'BROUILLON' | 'EMISE' | 'ENVOYEE' | 'PAYEE' | 'RETARD' | 'ANNULEE'
 type StatutTache = 'A_FAIRE' | 'EN_COURS' | 'TERMINEE' | 'ANNULEE'
 type PrioriteTask = 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE'
 
 const evenementLabels: Record<string, string> = {
-  PROSPECTION: 'Opportunité',
   OPTION: 'Option',
   CONFIRME: 'Confirmé',
-  EN_COURS: 'En cours',
-  REALISE: 'Facturation',
+  ANNULE: 'Annulé',
 }
 
 const evenementVariants: Record<string, string> = {
-  PROSPECTION: 'secondary',
   OPTION: 'info',
   CONFIRME: 'success',
-  EN_COURS: 'purple',
-  REALISE: 'success',
+  ANNULE: 'destructive',
 }
 
 const devisLabels: Record<StatutDevis, string> = {

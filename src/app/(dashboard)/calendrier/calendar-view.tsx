@@ -34,12 +34,9 @@ const DAYS_FR = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
-  PROSPECTION: { bg: 'bg-gray-100', text: 'text-gray-700', dot: 'bg-gray-400' },
-  OPTION:      { bg: 'bg-blue-50',  text: 'text-blue-700',  dot: 'bg-blue-500' },
-  CONFIRME:    { bg: 'bg-red-50',   text: 'text-[#C41230]', dot: 'bg-[#C41230]' },
-  EN_COURS:    { bg: 'bg-purple-50',text: 'text-purple-700',dot: 'bg-purple-500' },
-  REALISE:     { bg: 'bg-emerald-50',text: 'text-emerald-700',dot: 'bg-emerald-500' },
-  ANNULE:      { bg: 'bg-orange-50',text: 'text-orange-700',dot: 'bg-orange-400' },
+  OPTION:   { bg: 'bg-blue-50',  text: 'text-blue-700',  dot: 'bg-blue-500' },
+  CONFIRME: { bg: 'bg-red-50',   text: 'text-[#C41230]', dot: 'bg-[#C41230]' },
+  ANNULE:   { bg: 'bg-gray-100', text: 'text-gray-500',  dot: 'bg-gray-400' },
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -70,11 +67,9 @@ function isoDate(date: Date) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const FILTER_STATUTS = [
-  { key: 'OPTION',      label: 'Option',    cfg: STATUT_CONFIG.OPTION },
-  { key: 'CONFIRME',    label: 'Confirmé',  cfg: STATUT_CONFIG.CONFIRME },
-  { key: 'EN_COURS',    label: 'En cours',  cfg: STATUT_CONFIG.EN_COURS },
-  { key: 'REALISE',     label: 'Réalisé',   cfg: STATUT_CONFIG.REALISE },
-  { key: 'ANNULE',      label: 'Annulé',    cfg: STATUT_CONFIG.ANNULE },
+  { key: 'OPTION',   label: 'Option',   cfg: STATUT_CONFIG.OPTION },
+  { key: 'CONFIRME', label: 'Confirmé', cfg: STATUT_CONFIG.CONFIRME },
+  { key: 'ANNULE',   label: 'Annulé',   cfg: STATUT_CONFIG.ANNULE },
 ]
 
 export function CalendarView({ evenements }: { evenements: EventData[] }) {
@@ -83,7 +78,7 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
   const [year, setYear]   = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth())
   const [activeStatuts, setActiveStatuts] = useState<Set<string>>(
-    new Set(['OPTION', 'CONFIRME', 'EN_COURS', 'REALISE'])
+    new Set(['OPTION', 'CONFIRME'])
   )
 
   function toggleStatut(key: string) {

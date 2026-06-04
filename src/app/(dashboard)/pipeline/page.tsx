@@ -7,10 +7,9 @@ import Link from 'next/link'
 import { Building2, Calendar, Euro } from 'lucide-react'
 
 const STATUTS = [
-  { key: 'PROSPECTION', label: 'Opportunité' },
-  { key: 'OPTION', label: 'Option' },
+  { key: 'OPTION',   label: 'Option' },
   { key: 'CONFIRME', label: 'Confirmé' },
-  { key: 'REALISE', label: 'Facturation' },
+  { key: 'ANNULE',   label: 'Annulé' },
 ]
 
 export default async function PipelinePage() {

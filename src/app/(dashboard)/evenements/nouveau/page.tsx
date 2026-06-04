@@ -28,10 +28,9 @@ const TYPES = [
 ]
 
 const STATUTS = [
-  { value: 'PROSPECTION', label: 'Opportunité' },
-  { value: 'OPTION', label: 'Option' },
+  { value: 'OPTION',   label: 'Option' },
   { value: 'CONFIRME', label: 'Confirmé' },
-  { value: 'EN_COURS', label: 'En cours' },
+  { value: 'ANNULE',   label: 'Annulé' },
 ]
 
 function NouvelEvenementForm() {
@@ -42,7 +41,7 @@ function NouvelEvenementForm() {
   const [loading, setLoading] = useState(false)
   const [clients, setClients] = useState<Array<{ id: string; raisonSociale: string }>>([])
   const [type, setType] = useState('AUTRE')
-  const [statut, setStatut] = useState('PROSPECTION')
+  const [statut, setStatut] = useState('OPTION')
   const [clientId, setClientId] = useState(prefilledClientId || '')
   const [sallesSelectionnees, setSallesSelectionnees] = useState<string[]>([])
   const [conflits, setConflits] = useState<Array<{ id: string; nom: string; statut: string; dateDebut: string | null; lieu: string | null }>>([])

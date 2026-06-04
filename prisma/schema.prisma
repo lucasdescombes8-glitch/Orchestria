@@ -97,7 +97,7 @@ model Evenement {
   commercialId       String?
   nom                String
   type               TypeEvenement   @default(AUTRE)
-  statut             StatutEvenement @default(PROSPECTION)
+  statut             StatutEvenement @default(OPTION)
   dateDebut          DateTime?
   dateFin            DateTime?
   heureDebutMontage  String?
@@ -135,11 +135,8 @@ enum TypeEvenement {
 }
 
 enum StatutEvenement {
-  PROSPECTION
   OPTION
   CONFIRME
-  EN_COURS
-  REALISE
   ANNULE
 }
 

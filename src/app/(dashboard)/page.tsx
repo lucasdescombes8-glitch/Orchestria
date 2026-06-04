@@ -54,7 +54,7 @@ export default async function DashboardPage() {
         where: { organisationId: orgId, statut: { in: ['PAYEE', 'ENVOYEE', 'EMISE'] }, dateEmission: { gte: lastMonthStart, lte: lastMonthEnd }, deletedAt: null },
       }),
       prisma.evenement.count({
-        where: { organisationId: orgId, statut: { in: ['CONFIRME', 'EN_COURS', 'OPTION'] }, deletedAt: null },
+        where: { organisationId: orgId, statut: { in: ['CONFIRME', 'OPTION'] }, deletedAt: null },
       }),
       prisma.devis.count({
         where: { organisationId: orgId, statut: { in: ['ENVOYE', 'VU'] }, deletedAt: null },
@@ -104,8 +104,7 @@ export default async function DashboardPage() {
     )
 
     const pipelineLabels: Record<string, string> = {
-      PROSPECTION: 'Opportunité', OPTION: 'Option', CONFIRME: 'Confirmé',
-      REALISE: 'Facturation', 
+      OPTION: 'Option', CONFIRME: 'Confirmé', ANNULE: 'Annulé',
     }
 
     return (
@@ -147,7 +146,7 @@ export default async function DashboardPage() {
           <Card>
             <CardHeader><CardTitle className="text-base">Pipeline événements</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              {['PROSPECTION', 'OPTION', 'CONFIRME', 'REALISE'].map((statut) => {
+              {['OPTION', 'CONFIRME', 'ANNULE'].map((statut) => {
                 const item = pipeline.find((p) => p.statut === statut)
                 const count = item?._count ?? 0
                 const max = Math.max(...pipeline.map((p) => p._count), 1)
