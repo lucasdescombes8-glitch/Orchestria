@@ -49,24 +49,28 @@ enum Role {
 }
 
 model Client {
-  id             String    @id @default(cuid())
-  organisationId String
-  raisonSociale  String
-  siret          String?
-  email          String?
-  telephone      String?
-  adresse        String?
-  codePostal     String?
-  ville          String?
-  secteur        String?
-  notes          String?
-  actif          Boolean   @default(true)
-  deletedAt      DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
-  contacts       Contact[]
-  evenements     Evenement[]
+  id                String    @id @default(cuid())
+  organisationId    String
+  raisonSociale     String
+  siret             String?
+  email             String?
+  telephone         String?
+  adresse           String?
+  codePostal        String?
+  ville             String?
+  secteur           String?
+  notes             String?
+  typeEntreprise    String    @default("CLIENT")
+  typePrestataire   String?
+  actif             Boolean   @default(true)
+  satisfaction      Int?
+  notesSatisfaction String?
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  organisation      Organisation @relation(fields: [organisationId], references: [id])
+  contacts          Contact[]
+  evenements        Evenement[]
 }
 
 model Contact {
@@ -93,8 +97,13 @@ model Evenement {
   statut             StatutEvenement @default(PROSPECTION)
   dateDebut          DateTime?
   dateFin            DateTime?
+  heureDebutMontage  String?
+  heureDebutEvenement String?
+  heureFinEvenement  String?
+  heureFinDemontage  String?
   nombreParticipants Int?
   budgetIndicatif    Float?
+  salles             String?
   lieu               String?
   brief              String?
   notes              String?
@@ -145,6 +154,7 @@ model Devis {
   tauxMarge          Float?
   notes              String?
   conditionsPaiement String?
+  motifRefus         String?
   nbConsultations    Int         @default(0)
   deletedAt          DateTime?
   createdAt          DateTime    @default(now())
@@ -291,4 +301,11 @@ model Prestataire {
   actif          Boolean  @default(true)
   createdAt      DateTime @default(now())
   organisation   Organisation @relation(fields: [organisationId], references: [id])
+}
+
+model TypePrestataire {
+  id             String   @id @default(cuid())
+  organisationId String
+  nom            String
+  createdAt      DateTime @default(now())
 }

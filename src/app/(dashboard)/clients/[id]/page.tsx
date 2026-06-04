@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getClient } from '@/actions/clients'
+import { getTypesPrestataire } from '@/actions/types-prestataire'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -20,7 +21,7 @@ interface Props {
 
 export default async function ClientDetailPage({ params }: Props) {
   const { id } = await params
-  const client = await getClient(id)
+  const [client, typesPrestataire] = await Promise.all([getClient(id), getTypesPrestataire()])
 
   if (!client) notFound()
 
@@ -96,7 +97,7 @@ export default async function ClientDetailPage({ params }: Props) {
         </TabsList>
 
         <TabsContent value="infos" className="mt-4">
-          <EditClientForm client={client} />
+          <EditClientForm client={client} typesPrestataire={typesPrestataire} />
         </TabsContent>
 
         <TabsContent value="contacts" className="mt-4">

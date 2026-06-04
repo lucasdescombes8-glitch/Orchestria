@@ -2,6 +2,7 @@ import { getEvenements } from '@/actions/evenements'
 import { KanbanBoard } from '@/components/evenements/kanban-board'
 import { Button } from '@/components/ui/button'
 import { StatutEvenementBadge } from '@/components/shared/status-badge'
+import { SortableHeader } from '@/components/shared/sortable-header'
 import { formatDate, formatCurrency } from '@/lib/utils'
 import { Plus, LayoutGrid, List, Calendar, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
@@ -10,7 +11,7 @@ import {
 } from '@/components/ui/table'
 
 interface Props {
-  searchParams: Promise<{ view?: string; statut?: string }>
+  searchParams: Promise<{ view?: string; statut?: string; sort?: string; order?: string }>
 }
 
 const typeLabels: Record<string, string> = {
@@ -27,7 +28,24 @@ const typeLabels: Record<string, string> = {
 export default async function EvenementsPage({ searchParams }: Props) {
   const params = await searchParams
   const view = params.view || 'kanban'
-  const evenements = await getEvenements(params.statut ? { statut: params.statut } : undefined)
+  const sort = params.sort ?? 'dateDebut'
+  const order = params.order ?? 'desc'
+  const allEvenements = await getEvenements(params.statut ? { statut: params.statut } : undefined)
+
+  const evenements = [...allEvenements].sort((a, b) => {
+    let va: any, vb: any
+    if (sort === 'nom') { va = a.nom; vb = b.nom }
+    else if (sort === 'dateDebut') { va = a.dateDebut ? new Date(a.dateDebut).getTime() : 0; vb = b.dateDebut ? new Date(b.dateDebut).getTime() : 0 }
+    else if (sort === 'budgetIndicatif') { va = a.budgetIndicatif ?? 0; vb = b.budgetIndicatif ?? 0 }
+    else if (sort === 'statut') { va = a.statut; vb = b.statut }
+    else if (sort === 'client') { va = a.client?.raisonSociale ?? ''; vb = b.client?.raisonSociale ?? '' }
+    else { va = a.dateDebut; vb = b.dateDebut }
+    if (va < vb) return order === 'asc' ? -1 : 1
+    if (va > vb) return order === 'asc' ? 1 : -1
+    return 0
+  })
+
+  const sp = { view: params.view, statut: params.statut, sort: params.sort, order: params.order }
 
   return (
     <div className="space-y-6">
@@ -76,13 +94,13 @@ export default async function EvenementsPage({ searchParams }: Props) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Événement</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Lieu</TableHead>
+                <TableHead><SortableHeader label="Projet" field="nom" sort={sort} order={order} searchParams={sp} /></TableHead>
+                <TableHead><SortableHeader label="Entreprise" field="client" sort={sort} order={order} searchParams={sp} /></TableHead>
+                <TableHead><SortableHeader label="Date" field="dateDebut" sort={sort} order={order} searchParams={sp} /></TableHead>
+                <TableHead>Salles</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead>Budget</TableHead>
-                <TableHead>Statut</TableHead>
+                <TableHead><SortableHeader label="Budget" field="budgetIndicatif" sort={sort} order={order} searchParams={sp} /></TableHead>
+                <TableHead><SortableHeader label="Statut" field="statut" sort={sort} order={order} searchParams={sp} /></TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -115,12 +133,7 @@ export default async function EvenementsPage({ searchParams }: Props) {
                       {formatDate(ev.dateDebut)}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {ev.lieu ? (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {ev.lieu}
-                        </span>
-                      ) : '—'}
+                      {(ev as any).salles ? (ev as any).salles.split(',').map((s: string) => s.trim()).join(', ') : '—'}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {typeLabels[ev.type] ?? ev.type}
