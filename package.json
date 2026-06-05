@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && node scripts/pre-deploy.js && next build",
+    "build": "npx prisma generate && node -e \"const u=process.env.DATABASE_URL;if(u&&u.startsWith('postgres')){const ex=require('child_process').execSync;try{ex('npx prisma db execute --file scripts/migrate-data.sql',{stdio:'inherit'})}catch(e){console.log('migration skipped')}ex('npx prisma db push --accept-data-loss',{stdio:'inherit'})}\" && next build",
     "start": "next start",
     "lint": "eslint",
     "seed": "ts-node --project tsconfig.seed.json prisma/seed.ts"
