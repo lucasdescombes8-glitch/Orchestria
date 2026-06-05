@@ -13,9 +13,11 @@ import { Textarea } from '@/components/ui/textarea'
 import Link from 'next/link'
 
 const STATUTS = [
-  { key: 'OPTION',   label: 'Option',    color: 'bg-blue-50 border-blue-200' },
-  { key: 'CONFIRME', label: 'Confirmé',  color: 'bg-green-50 border-green-200' },
-  { key: 'ANNULE',   label: 'Annulé',    color: 'bg-red-50 border-red-200' },
+  { key: 'OPPORTUNITE', label: 'Opportunité', color: 'bg-purple-50 border-purple-200' },
+  { key: 'OPTION',      label: 'Option',      color: 'bg-blue-50 border-blue-200' },
+  { key: 'CONFIRME',    label: 'Confirmé',    color: 'bg-green-50 border-green-200' },
+  { key: 'FACTURE',     label: 'Facturé',     color: 'bg-amber-50 border-amber-200' },
+  { key: 'ANNULE',      label: 'Annulé',      color: 'bg-red-50 border-red-200' },
 ]
 
 const TYPE_OPTIONS = [

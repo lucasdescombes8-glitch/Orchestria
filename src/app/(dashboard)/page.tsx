@@ -54,7 +54,7 @@ export default async function DashboardPage() {
         where: { organisationId: orgId, statut: { in: ['PAYEE', 'ENVOYEE', 'EMISE'] }, dateEmission: { gte: lastMonthStart, lte: lastMonthEnd }, deletedAt: null },
       }),
       prisma.evenement.count({
-        where: { organisationId: orgId, statut: { in: ['CONFIRME', 'OPTION'] }, deletedAt: null },
+        where: { organisationId: orgId, statut: { in: ['OPPORTUNITE', 'OPTION', 'CONFIRME', 'FACTURE'] }, deletedAt: null },
       }),
       prisma.devis.count({
         where: { organisationId: orgId, statut: { in: ['ENVOYE', 'VU'] }, deletedAt: null },

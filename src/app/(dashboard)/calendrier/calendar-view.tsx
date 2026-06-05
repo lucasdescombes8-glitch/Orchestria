@@ -34,9 +34,11 @@ const DAYS_FR = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
-  OPTION:   { bg: 'bg-blue-50',  text: 'text-blue-700',  dot: 'bg-blue-500' },
-  CONFIRME: { bg: 'bg-red-50',   text: 'text-[#C41230]', dot: 'bg-[#C41230]' },
-  ANNULE:   { bg: 'bg-gray-100', text: 'text-gray-500',  dot: 'bg-gray-400' },
+  OPPORTUNITE: { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-500' },
+  OPTION:      { bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500' },
+  CONFIRME:    { bg: 'bg-red-50',    text: 'text-[#C41230]',  dot: 'bg-[#C41230]' },
+  FACTURE:     { bg: 'bg-amber-50',  text: 'text-amber-700',  dot: 'bg-amber-500' },
+  ANNULE:      { bg: 'bg-gray-100',  text: 'text-gray-500',   dot: 'bg-gray-400' },
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -67,9 +69,11 @@ function isoDate(date: Date) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const FILTER_STATUTS = [
-  { key: 'OPTION',   label: 'Option',   cfg: STATUT_CONFIG.OPTION },
-  { key: 'CONFIRME', label: 'Confirmé', cfg: STATUT_CONFIG.CONFIRME },
-  { key: 'ANNULE',   label: 'Annulé',   cfg: STATUT_CONFIG.ANNULE },
+  { key: 'OPPORTUNITE', label: 'Opportunité', cfg: STATUT_CONFIG.OPPORTUNITE },
+  { key: 'OPTION',      label: 'Option',      cfg: STATUT_CONFIG.OPTION },
+  { key: 'CONFIRME',    label: 'Confirmé',    cfg: STATUT_CONFIG.CONFIRME },
+  { key: 'FACTURE',     label: 'Facturé',     cfg: STATUT_CONFIG.FACTURE },
+  { key: 'ANNULE',      label: 'Annulé',      cfg: STATUT_CONFIG.ANNULE },
 ]
 
 export function CalendarView({ evenements }: { evenements: EventData[] }) {
@@ -78,7 +82,7 @@ export function CalendarView({ evenements }: { evenements: EventData[] }) {
   const [year, setYear]   = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth())
   const [activeStatuts, setActiveStatuts] = useState<Set<string>>(
-    new Set(['OPTION', 'CONFIRME'])
+    new Set(['OPPORTUNITE', 'OPTION', 'CONFIRME', 'FACTURE'])
   )
 
   function toggleStatut(key: string) {

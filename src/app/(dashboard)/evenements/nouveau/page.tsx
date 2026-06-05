@@ -28,9 +28,11 @@ const TYPES = [
 ]
 
 const STATUTS = [
-  { value: 'OPTION',   label: 'Option' },
-  { value: 'CONFIRME', label: 'Confirmé' },
-  { value: 'ANNULE',   label: 'Annulé' },
+  { value: 'OPPORTUNITE', label: 'Opportunité' },
+  { value: 'OPTION',      label: 'Option' },
+  { value: 'CONFIRME',    label: 'Confirmé' },
+  { value: 'FACTURE',     label: 'Facturé' },
+  { value: 'ANNULE',      label: 'Annulé' },
 ]
 
 function NouvelEvenementForm() {

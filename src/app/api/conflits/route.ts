@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       where: {
         organisationId: orgId,
         deletedAt: null,
-        statut: { in: ['OPTION', 'CONFIRME'] },
+        statut: { in: ['OPPORTUNITE', 'OPTION', 'CONFIRME', 'FACTURE'] },
         ...(excludeId ? { id: { not: excludeId } } : {}),
         OR: [
           { dateDebut: { lte: end }, dateFin: { gte: start } },

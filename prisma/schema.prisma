@@ -132,8 +132,10 @@ enum TypeEvenement {
 }
 
 enum StatutEvenement {
+  OPPORTUNITE
   OPTION
   CONFIRME
+  FACTURE
   ANNULE
 }
 
